@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     public int currentLevel; // one-indexed
 
     [Header ("Character")]
-    public int selectedCharacter;
+    public int selectedCharacter = 0;
     public Sprite[] characterSprites;
 
     private void Awake()

@@ -20,8 +20,8 @@ public class CharacterSelectionController : MonoBehaviour
 
     public void SwapCharacter(int characterIndex)
     {
-        SFXPlayerSingleton.Instance.PlaySound(
-            SFXPlayerSingleton.Instance.GetButtonSound("select"), .1f);
+        SFXPlayerSingleton.Ins.PlaySound(
+            SFXPlayerSingleton.Ins.GetButtonSound("select"), .1f);
 
         GameManager.Ins.selectedCharacter = characterIndex;
         UpdateSelectorPosition();
@@ -33,11 +33,10 @@ public class CharacterSelectionController : MonoBehaviour
     {
         backgroundController.GrayBackgroundOut();
         okayButton.transform.localScale = Vector2.one;
-        SFXPlayerSingleton.Instance.PlaySound(
-            SFXPlayerSingleton.Instance.GetButtonSound("exit"), .1f);
+        SFXPlayerSingleton.Ins.PlaySound(
+            SFXPlayerSingleton.Ins.GetButtonSound("exit"), .1f);
 
-        mainMenu.SetActive(true);
-        gameObject.SetActive(false);
+        SwapMenuManager.Ins.ToMain();
     }
 
     private void UpdateSelectorPosition()

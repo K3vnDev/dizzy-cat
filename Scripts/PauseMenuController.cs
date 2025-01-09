@@ -1,43 +1,47 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class PauseMenuController : MonoBehaviour
 {
-    private PlayerController playerController;
+    public bool gameIsPaused = false;
+    CanvasGroup canvasGroup;
 
     private void Start()
     {
-        playerController = GameObject.FindWithTag("Player") 
-            .GetComponent<PlayerController>();
+        canvasGroup = GetComponent<CanvasGroup>();
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape)) ResumeButton();
+        if (Input.GetKeyDown(KeyCode.Escape)) TogglePause();
     }
 
-    public void ResumeButton()
+    public void TogglePause()
     {
-        this.gameObject.SetActive(false);
-        GameObject.FindGameObjectWithTag("Player")
-            .GetComponent<PlayerController>().gameIsPaused = false;
+        gameIsPaused = !gameIsPaused;
 
-        SFXPlayerSingleton.Instance.PlaySound(
-            SFXPlayerSingleton.Instance.GetButtonSound("enter"), .1f);
-        playerController.gameIsPaused = false;
-        Time.timeScale = 1f;
-        Cursor.visible = false;
+        canvasGroup.interactable = gameIsPaused;
+        canvasGroup.alpha = gameIsPaused ? 1 : 0;
+
+        Time.timeScale = gameIsPaused ? 0 : 1;
+        Cursor.visible = gameIsPaused;
+
+        MusicPlayerSingleton.Ins.ToggleVolume(gameIsPaused);
+
+        if (!gameIsPaused)
+        {
+            AudioClip enterSound = SFXPlayerSingleton.Ins.GetButtonSound("enter");
+            SFXPlayerSingleton.Ins.PlaySound(enterSound, .1f);
+        }
     }
-
     public void MainMenuButton()
     {
-        SFXPlayerSingleton.Instance.PlaySound(
-            SFXPlayerSingleton.Instance.GetButtonSound("exit"), .1f);
+        AudioClip exitSound = SFXPlayerSingleton.Ins.GetButtonSound("exit");
+        SFXPlayerSingleton.Ins.PlaySound(exitSound, .1f);
 
-        playerController.gameIsPaused = false;
+        MusicPlayerSingleton.Ins.ToggleVolume(false);
         Time.timeScale = 1f;
-        SceneManager.LoadScene(0);
+
+        SceneManager.LoadScene("MainMenu");
     }
 }

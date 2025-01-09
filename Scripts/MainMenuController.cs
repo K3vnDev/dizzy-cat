@@ -16,36 +16,33 @@ public class MainMenuController : MonoBehaviour
 
     public void PlayButton()
     {
-        SFXPlayerSingleton.Instance.PlaySound(
-            SFXPlayerSingleton.Instance.GetButtonSound("play"), .1f);
+        SFXPlayerSingleton.Ins.PlaySound(
+            SFXPlayerSingleton.Ins.GetButtonSound("play"), .1f);
         SceneManager.LoadScene(GameManager.Ins.currentLevel);
     }
 
     public void SkinsButton()
     {
         backgroundController.GrayBackgroundIn();
-        SFXPlayerSingleton.Instance.PlaySound(
-            SFXPlayerSingleton.Instance.GetButtonSound("enter"), .1f);
+        SFXPlayerSingleton.Ins.PlaySound(
+            SFXPlayerSingleton.Ins.GetButtonSound("enter"), .1f);
         ResetButtonsScale();
 
-        characterSelection.SetActive(true);
-        gameObject.SetActive(false);
+        SwapMenuManager.Ins.ToSkins();
     }
 
     public void SettingsButton()
     {
         backgroundController.GrayBackgroundIn();
-        SFXPlayerSingleton.Instance.PlaySound(
-            SFXPlayerSingleton.Instance.GetButtonSound("enter"), .1f);
+        SFXPlayerSingleton.Ins.PlaySound(
+            SFXPlayerSingleton.Ins.GetButtonSound("enter"), .1f);
 
-        settingsMenu.SetActive(true);
-        gameObject.SetActive(false);
+        SwapMenuManager.Ins.ToSettings();
     }
 
     public void ExitButtom()
     {
-        SFXPlayerSingleton.Instance.PlaySound(
-            SFXPlayerSingleton.Instance.GetButtonSound("exit"), .1f);
+        SFXPlayerSingleton.Ins.PlaySound(SFXPlayerSingleton.Ins.GetButtonSound("exit"), .1f);
         Application.Quit();
     }
 

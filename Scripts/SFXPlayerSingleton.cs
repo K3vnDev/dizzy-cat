@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class SFXPlayerSingleton : MonoBehaviour
 {
-    public static SFXPlayerSingleton Instance;
+    public static SFXPlayerSingleton Ins;
     private AudioSource audioSource;
     public float audioMixerVol = 85;
 
@@ -10,15 +10,8 @@ public class SFXPlayerSingleton : MonoBehaviour
 
     private void Awake()
     {
-        if (SFXPlayerSingleton.Instance == null)
-        {
-            SFXPlayerSingleton.Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (Ins == null) Ins = this;
+        else Destroy(gameObject);
     }
 
     private void Start()

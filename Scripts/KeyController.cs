@@ -44,7 +44,7 @@ public class KeyController : MonoBehaviour
             StopAllCoroutines();
             StartCoroutine(MoveAndRotateToLock());
             keyParticles.Stop();
-            SFXPlayerSingleton.Instance.PlaySound(getKeySound, .15f);
+            SFXPlayerSingleton.Ins.PlaySound(getKeySound, .15f);
             GetComponent<BoxCollider2D>().enabled = false;
         }
     }
@@ -71,7 +71,7 @@ public class KeyController : MonoBehaviour
         transform.position = targetPos;
         transform.localRotation = targetRot;
 
-        SFXPlayerSingleton.Instance.PlaySound(openLockSound, .15f);
+        SFXPlayerSingleton.Ins.PlaySound(openLockSound, .15f);
         lockController.triggered = true;
         playerController.playerCanMove = true;
     }

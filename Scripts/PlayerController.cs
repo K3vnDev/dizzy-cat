@@ -18,10 +18,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     private bool hasLanded = false;
 
-    [Header ("Pause Menu")]
-    [SerializeField] private GameObject pauseMenu;
-    public bool gameIsPaused = false;
-
     [Header ("Player Particles")]
     [SerializeField] private GameObject playerParticles;
     public bool playerCanMove = true;
@@ -39,7 +35,6 @@ public class PlayerController : MonoBehaviour
         scenarioController = GameObject.FindGameObjectWithTag("Scenario").GetComponent<ScenarioController>();
 
         initialGravity = rb.gravityScale;
-        Cursor.visible = false;
 
         SetCharacterSprite();
 
@@ -56,10 +51,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (!gameIsPaused)
-        {
-            horizontalAxis = Input.GetAxisRaw("Horizontal");
-        }
+        horizontalAxis = Input.GetAxisRaw("Horizontal");
 
         HasLandedLogic();
 
@@ -70,22 +62,14 @@ public class PlayerController : MonoBehaviour
             if (!scenarioController.rotating && playerCanMove && horizontalAxis != 0)
             {
                 scenarioController.SetRotation(horizontalAxis);
-                SFXPlayerSingleton.Instance.PlaySound(rotateSound, .2f);
+                SFXPlayerSingleton.Ins.PlaySound(rotateSound, .2f);
             }
             else if (!playerCanMove && horizontalAxis != 0 
                 && GameObject.FindWithTag("Cant Rotate") == null && !fishCollected)
             {
                 Instantiate(cantRotateSign);
-                SFXPlayerSingleton.Instance.PlaySound(errorSound, .1f);
+                SFXPlayerSingleton.Ins.PlaySound(errorSound, .1f);
             }
-        }
-
-        if (!gameIsPaused && Input.GetKeyDown(KeyCode.Escape))
-        {
-            gameIsPaused = true;
-            pauseMenu.SetActive(true);
-            Time.timeScale = 0f;
-            Cursor.visible = true;
         }
 
         if (scenarioController.rotating)
@@ -93,10 +77,8 @@ public class PlayerController : MonoBehaviour
             rb.velocity = Vector2.zero;
             rb.gravityScale = 0;
         }
-        else
-        {
-            rb.gravityScale = initialGravity;
-        }
+        else rb.gravityScale = initialGravity;
+
     }
 
     private void HasLandedLogic()
@@ -114,7 +96,7 @@ public class PlayerController : MonoBehaviour
 
         Instantiate(playerParticles, particlesPos, Quaternion.Euler(Vector3.zero));
 
-        SFXPlayerSingleton.Instance.PlaySound(getFishSound, 0.1f);
+        SFXPlayerSingleton.Ins.PlaySound(getFishSound, 0.1f);
         playerCanMove = false;
         fishCollected = true;
     }
@@ -122,7 +104,7 @@ public class PlayerController : MonoBehaviour
     private IEnumerator MeowSound()
     {
         yield return new WaitForSeconds(.25f);
-        SFXPlayerSingleton.Instance.PlaySound(catMeowSound, .2f);
+        SFXPlayerSingleton.Ins.PlaySound(catMeowSound, .2f);
     }
 
     private void OnDrawGizmos()

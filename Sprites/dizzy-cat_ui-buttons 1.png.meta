@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7488ecc9fcd2eeb4cb660edddc2fa6b7
+guid: da50cc2cd45aca9438c9ceee2f737830
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -67,10 +67,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 4096
+    maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 2
+    textureFormat: 4
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -117,53 +117,11 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Main Buttons2_0
+      name: dizzy-cat_ui-buttons 1_0
       rect:
         serializedVersion: 2
-        x: 49
-        y: 88
-        width: 30
-        height: 32
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 033eb207b4cb83645b961bb7a961d07f
-      internalID: 132642008
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Main Buttons2_1
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 51
-        width: 26
-        height: 26
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bb1c7c74cfe23b247acdab10e3634a0a
-      internalID: -1126134210
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Main Buttons2_2
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 48
+        x: 0
+        y: 29
         width: 32
         height: 32
       alignment: 0
@@ -173,18 +131,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d7dbe9d643476a941ba90ce5fc54e8b6
-      internalID: -1107530729
+      spriteID: e228046265acf0544bc6d8cf5556325d
+      internalID: 51059569
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Main Buttons2_3
+      name: dizzy-cat_ui-buttons 1_1
       rect:
         serializedVersion: 2
-        x: 86
-        y: 51
+        x: 33
+        y: 35
         width: 26
         height: 26
       alignment: 0
@@ -194,18 +152,39 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4275f7309d8ea64488699b5cced7454b
-      internalID: -112278463
+      spriteID: 37dd3c2387ad300449ea008af6e573ab
+      internalID: -261948956
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Main Buttons2_4
+      name: dizzy-cat_ui-buttons 1_2
       rect:
         serializedVersion: 2
-        x: 16
-        y: 32
+        x: 33
+        y: 8
+        width: 26
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7e6df710f433d7a44b995d662391b113
+      internalID: 491089442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dizzy-cat_ui-buttons 1_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 12
         width: 16
         height: 16
       alignment: 0
@@ -215,18 +194,18 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b90d7f8f7d0af594ea2cefe269291a1f
-      internalID: 82824728
+      spriteID: dd505215b6f005f4299ef5b7275083c1
+      internalID: 523820970
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Main Buttons2_5
+      name: dizzy-cat_ui-buttons 1_4
       rect:
         serializedVersion: 2
-        x: 48
-        y: 19
+        x: 0
+        y: 0
         width: 32
         height: 11
       alignment: 0
@@ -236,8 +215,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 76bbfc40b09da004997591539cdba2de
-      internalID: 304435996
+      spriteID: 72a6f05243be6144e8ed27b47426fb9c
+      internalID: 2095916910
       vertices: []
       indices: 
       edges: []
@@ -253,12 +232,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Main Buttons2_0: 132642008
-      Main Buttons2_1: -1126134210
-      Main Buttons2_2: -1107530729
-      Main Buttons2_3: -112278463
-      Main Buttons2_4: 82824728
-      Main Buttons2_5: 304435996
+      dizzy-cat_ui-buttons 1_0: 51059569
+      dizzy-cat_ui-buttons 1_1: -261948956
+      dizzy-cat_ui-buttons 1_2: 491089442
+      dizzy-cat_ui-buttons 1_3: 523820970
+      dizzy-cat_ui-buttons 1_4: 2095916910
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

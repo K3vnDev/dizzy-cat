@@ -71,7 +71,7 @@ public class EndManager : MonoBehaviour
         float step = 0;
 
         yield return new WaitForSeconds(bgAppearDelay);
-        SFXPlayerSingleton.Instance.PlaySound(winSound, 0);
+        SFXPlayerSingleton.Ins.PlaySound(winSound, 0);
 
         while (step < bgAppearTime)
         {
@@ -87,7 +87,7 @@ public class EndManager : MonoBehaviour
     private IEnumerator StopMusic(float time)
     {
         AudioSource musicSource =
-            MusicPlayerSingleton.Instance.audioSource;
+            MusicPlayerSingleton.Ins.audioSource;
 
         float start = musicSource.volume, target = 0, step = 0;
         yield return new WaitForSeconds(stopMusicDelay);
@@ -123,7 +123,7 @@ public class EndManager : MonoBehaviour
         bgImage.color = targetColor;
 
         AudioSource musicSource =
-            MusicPlayerSingleton.Instance.audioSource;
+            MusicPlayerSingleton.Ins.audioSource;
         musicSource.volume = .5f;
         musicSource.Play();
 

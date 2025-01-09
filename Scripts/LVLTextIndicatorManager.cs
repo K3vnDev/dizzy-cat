@@ -1,19 +1,17 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class LVLTextIndicatorManager : MonoBehaviour
 {
     private TextMeshProUGUI tmpText;
-    private PlayerController playerController;
+    private PauseMenuController pauseMenuController;
     [SerializeField] private float delay, fadeIn, hold, fadeOut;
     private Color currentAnimationColor = new();
 
     void Start()
     {
-        playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+        pauseMenuController = GameObject.FindWithTag("Pause Menu").GetComponent<PauseMenuController>();
         tmpText = GetComponent<TextMeshProUGUI>();
         int currentLevel = GameManager.Ins.currentLevel;
         tmpText.text = $"Level {currentLevel}/10";
@@ -22,7 +20,7 @@ public class LVLTextIndicatorManager : MonoBehaviour
 
     private void Update()
     {
-        tmpText.color = playerController.gameIsPaused ?
+        tmpText.color = pauseMenuController.gameIsPaused ?
             tmpText.color = Color.white : currentAnimationColor;
     }
 
