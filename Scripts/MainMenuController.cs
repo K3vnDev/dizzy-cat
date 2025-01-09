@@ -18,7 +18,7 @@ public class MainMenuController : MonoBehaviour
     {
         SFXPlayerSingleton.Instance.PlaySound(
             SFXPlayerSingleton.Instance.GetButtonSound("play"), .1f);
-        SceneManager.LoadScene(InfoPlayerSingleton.Instance.currentLevel);
+        SceneManager.LoadScene(GameManager.Ins.currentLevel);
     }
 
     public void SkinsButton()

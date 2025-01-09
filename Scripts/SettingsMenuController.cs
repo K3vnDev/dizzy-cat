@@ -24,7 +24,7 @@ public class SettingsMenuController : MonoBehaviour
         ChangeSFXVolume(SFXPlayerSingleton.Instance.audioMixerVol);
         sfx_slider.value = SFXPlayerSingleton.Instance.audioMixerVol;
 
-        fullscreen_toggle.isOn = InfoPlayerSingleton.Instance.fsActive;
+        fullscreen_toggle.isOn = GameManager.Ins.fsActive;
     }
 
     public void OkayButton()
@@ -73,6 +73,6 @@ public class SettingsMenuController : MonoBehaviour
         SFXPlayerSingleton.Instance.PlaySound(
             fullscreen ? fs_sound1 : fs_sound2, .1f);
 
-        InfoPlayerSingleton.Instance.fsActive = fullscreen;
+        GameManager.Ins.fsActive = fullscreen;
     }
 }

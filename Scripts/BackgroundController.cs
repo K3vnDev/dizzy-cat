@@ -23,7 +23,7 @@ public class BackgroundController : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
 
         StartCoroutine(LoopColors(transitionTime, waitTime,
-            InfoPlayerSingleton.Instance.currentBgColor));
+            GameManager.Ins.currentBgColor));
     }
 
     void Update()
@@ -54,7 +54,7 @@ public class BackgroundController : MonoBehaviour
     {
         StopAllCoroutines();
 
-        Color targetColor = bgcolors[InfoPlayerSingleton.Instance.currentBgColor];
+        Color targetColor = bgcolors[GameManager.Ins.currentBgColor];
 
         StartCoroutine(LerpColor(spriteRenderer.color,
             targetColor, grayBgTransitionTime / 2, true));
@@ -84,7 +84,7 @@ public class BackgroundController : MonoBehaviour
             {
                 currentColor = 0;
             }
-            InfoPlayerSingleton.Instance.currentBgColor = currentColor;
+            GameManager.Ins.currentBgColor = currentColor;
         }
     }
 
@@ -102,6 +102,6 @@ public class BackgroundController : MonoBehaviour
         spriteRenderer.color = target;
 
         if (outMode) StartCoroutine(LoopColors(transitionTime, waitTime,
-            InfoPlayerSingleton.Instance.currentBgColor));
+            GameManager.Ins.currentBgColor));
     }
 }

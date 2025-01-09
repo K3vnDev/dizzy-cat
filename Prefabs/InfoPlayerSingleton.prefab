@@ -41,9 +41,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 8229674049915329248}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ec315480c8969146a61d9d28301e37b, type: 3}
+  m_Script: {fileID: 11500000, guid: 960177e9c5d055e44b0715cbf3dc853b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   selectedCharacter: 0
-  currentLevel: 1
+  currentLevel: 0
   currentBgColor: 7
+  fsActive: 1
+  characterSprites: []

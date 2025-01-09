@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 public class ButtonsController : MonoBehaviour, 
@@ -7,10 +8,12 @@ public class ButtonsController : MonoBehaviour,
 {
     [SerializeField] private bool specialButton;
     private bool pointerHovering = false;
+    public bool isDisabled = false;
 
     private Vector2 maxScale = Vector2.one, minScale = Vector2.one;
-    private float time = .3f;
+    private readonly float ANIMATION_TIME = 0.3f;
 
+    [SerializeField] UnityEvent onClick;
     [SerializeField] AnimationCurve easeOutCurve;
 
     private void Awake()
@@ -33,26 +36,32 @@ public class ButtonsController : MonoBehaviour,
         transform.localScale = target;
     }
     
-    //On Hover
+    //Hover
     public void OnPointerEnter(PointerEventData eventData)
     {
+        if (isDisabled) return;
+
         StopAllCoroutines();
-        StartCoroutine(LerpScale(transform.localScale, maxScale, time, easeOutCurve));
+        StartCoroutine(LerpScale(transform.localScale, maxScale, ANIMATION_TIME, easeOutCurve));
         pointerHovering = true;
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         StopAllCoroutines();
-        StartCoroutine(LerpScale(transform.localScale, minScale, time * .75f, easeOutCurve));
+        StartCoroutine(LerpScale(transform.localScale, minScale, ANIMATION_TIME * .75f, easeOutCurve));
         pointerHovering = false;
     }
 
-    //On Click
+    //Click
     public void OnPointerDown(PointerEventData eventData)
     {
+        if (isDisabled) return;
+
         StopAllCoroutines();
-        StartCoroutine(LerpScale(transform.localScale, minScale, time * .75f, easeOutCurve));
+        StartCoroutine(LerpScale(transform.localScale, minScale, ANIMATION_TIME * .75f, easeOutCurve));
+
+        onClick?.Invoke();
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -60,7 +69,7 @@ public class ButtonsController : MonoBehaviour,
         if (pointerHovering)
         {
             StopAllCoroutines();
-            StartCoroutine(LerpScale(transform.localScale, maxScale, time, easeOutCurve));
+            StartCoroutine(LerpScale(transform.localScale, maxScale, ANIMATION_TIME, easeOutCurve));
         }
     }
 }

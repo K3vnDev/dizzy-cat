@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 9a243a01277b7ce4fa166c74cd094b2f
+guid: 596343eef0206764888eedf0615c7355
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -67,10 +67,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 4096
+    maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
+    textureFormat: 4
+    textureCompression: 2
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -117,7 +117,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Cat & Skins_0
+      name: Cats_0
       rect:
         serializedVersion: 2
         x: 0
@@ -131,14 +131,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 02b3cafba681e9d469f0c99cc5d7a551
-      internalID: -1816869992
+      spriteID: ea25451e48cb5c14ba1226f222e7cd8e
+      internalID: 2130236719
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cat & Skins_1
+      name: Cats_1
       rect:
         serializedVersion: 2
         x: 32
@@ -152,14 +152,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e0668e27de50c5f4b97cac90274d607e
-      internalID: 1029713094
+      spriteID: 86a69350a0ffc8242b9f1151da3e85d0
+      internalID: 468243813
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cat & Skins_2
+      name: Cats_2
       rect:
         serializedVersion: 2
         x: 16
@@ -173,14 +173,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0e5453cda7abff94f910d888a9696052
-      internalID: -511492493
+      spriteID: 78f19d3e9ad22da458e58ea999f72e95
+      internalID: -1963166566
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cat & Skins_3
+      name: Cats_3
       rect:
         serializedVersion: 2
         x: 48
@@ -194,14 +194,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cf1cc1b02dabc1e42a4282e2a1521d05
-      internalID: -973170738
+      spriteID: 9fa0fb6222cd8754d86020f1aa70cd5a
+      internalID: -1445478668
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cat & Skins_4
+      name: Cats_4
       rect:
         serializedVersion: 2
         x: 0
@@ -215,14 +215,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5f644a3a3ff355b4c85ecf6b2b3759d7
-      internalID: 440913708
+      spriteID: 86fe3026fb30a2e438c925ab59067ad9
+      internalID: 286539901
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cat & Skins_5
+      name: Cats_5
       rect:
         serializedVersion: 2
         x: 32
@@ -236,14 +236,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 77fd6938252b1cc4da16638019370e06
-      internalID: 282161561
+      spriteID: c26e10596502bfd49b4fcda5f4471b87
+      internalID: 1150595536
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cat & Skins_6
+      name: Cats_6
       rect:
         serializedVersion: 2
         x: 16
@@ -257,14 +257,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4d31bf8eb3679594fb48bac834336697
-      internalID: -2040986849
+      spriteID: 8f192893dc2e8b44fa6c91ae6ce2a4f5
+      internalID: 354770336
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Cat & Skins_7
+      name: Cats_7
       rect:
         serializedVersion: 2
         x: 48
@@ -278,8 +278,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c8bf11747844dd94e806a2d7865d799d
-      internalID: -1752382091
+      spriteID: fe44c56242b0eb64b9638cf5f7eaafa4
+      internalID: -1595798593
       vertices: []
       indices: 
       edges: []
@@ -295,14 +295,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Cat & Skins_0: -1816869992
-      Cat & Skins_1: 1029713094
-      Cat & Skins_2: -511492493
-      Cat & Skins_3: -973170738
-      Cat & Skins_4: 440913708
-      Cat & Skins_5: 282161561
-      Cat & Skins_6: -2040986849
-      Cat & Skins_7: -1752382091
+      Cats_0: 2130236719
+      Cats_1: 468243813
+      Cats_2: -1963166566
+      Cats_3: -1445478668
+      Cats_4: 286539901
+      Cats_5: 1150595536
+      Cats_6: 354770336
+      Cats_7: -1595798593
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

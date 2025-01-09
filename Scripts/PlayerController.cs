@@ -11,7 +11,6 @@ public class PlayerController : MonoBehaviour
 
     public bool isFalling = false;
     private bool fishCollected = false;
-    [SerializeField] private Sprite[] sprites;
     [SerializeField] private GameObject cantRotateSign;
 
     [Header ("Ground Checker")]
@@ -32,20 +31,27 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioClip errorSound;
     [SerializeField] private AudioClip rotateSound;
     [SerializeField] private AudioClip catMeowSound;
-    private float horizontalAxis;//**
+    private float horizontalAxis;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        scenarioController = GameObject.FindGameObjectWithTag("Scenario")
-            .GetComponent<ScenarioController>();
+        scenarioController = GameObject.FindGameObjectWithTag("Scenario").GetComponent<ScenarioController>();
+
         initialGravity = rb.gravityScale;
         Cursor.visible = false;
 
-        GetComponent<SpriteRenderer>().sprite = sprites[
-            InfoPlayerSingleton.Instance.selectedCharacter];
+        SetCharacterSprite();
 
         StartCoroutine(MeowSound());
+    }
+
+    void SetCharacterSprite()
+    {
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        Sprite characterSprite = GameManager.Ins.characterSprites[GameManager.Ins.selectedCharacter];
+
+        spriteRenderer.sprite = characterSprite;
     }
 
     private void Update()

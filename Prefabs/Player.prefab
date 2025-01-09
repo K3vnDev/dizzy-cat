@@ -77,7 +77,7 @@ SpriteRenderer:
   m_SortingLayerID: -10373253
   m_SortingLayer: 2
   m_SortingOrder: 1
-  m_Sprite: {fileID: -1816869992, guid: 9a243a01277b7ce4fa166c74cd094b2f, type: 3}
+  m_Sprite: {fileID: 2130236719, guid: 596343eef0206764888eedf0615c7355, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -161,15 +161,6 @@ MonoBehaviour:
   rb: {fileID: 0}
   circleCollider: {fileID: 2385367448200004574}
   isFalling: 0
-  sprites:
-  - {fileID: -1816869992, guid: 9a243a01277b7ce4fa166c74cd094b2f, type: 3}
-  - {fileID: 1029713094, guid: 9a243a01277b7ce4fa166c74cd094b2f, type: 3}
-  - {fileID: -511492493, guid: 9a243a01277b7ce4fa166c74cd094b2f, type: 3}
-  - {fileID: -973170738, guid: 9a243a01277b7ce4fa166c74cd094b2f, type: 3}
-  - {fileID: 440913708, guid: 9a243a01277b7ce4fa166c74cd094b2f, type: 3}
-  - {fileID: 282161561, guid: 9a243a01277b7ce4fa166c74cd094b2f, type: 3}
-  - {fileID: -2040986849, guid: 9a243a01277b7ce4fa166c74cd094b2f, type: 3}
-  - {fileID: -1752382091, guid: 9a243a01277b7ce4fa166c74cd094b2f, type: 3}
   cantRotateSign: {fileID: 4755206598921473901, guid: 2a4132b0ac4b89843aef9f499c29cfa3, type: 3}
   boxSize: {x: 0.5, y: 0.1}
   groundLayer:
@@ -183,4 +174,3 @@ MonoBehaviour:
   errorSound: {fileID: 8300000, guid: bf0c85355dbbbeb48a5a0c4c83106437, type: 3}
   rotateSound: {fileID: 8300000, guid: 8b04fe71cc89e0c40b97b744228d77c2, type: 3}
   catMeowSound: {fileID: 8300000, guid: 49e94a2c7d8e09e4ca4401fbe816d359, type: 3}
-  getKeySound: {fileID: 8300000, guid: 011884aa5945e064492fd877f770bc89, type: 3}

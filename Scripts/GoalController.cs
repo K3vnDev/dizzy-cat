@@ -72,7 +72,7 @@ public class GoalController : MonoBehaviour
         else
         {
             int activeScene = SceneManager.GetActiveScene().buildIndex + 1;
-            InfoPlayerSingleton.Instance.currentLevel = activeScene;
+            GameManager.Ins.currentLevel = activeScene;
             StartCoroutine(LoadNextScene(activeScene));
         }
     }
@@ -91,7 +91,7 @@ public class GoalController : MonoBehaviour
 
         yield return new WaitForSeconds(endManager.nextSceneTime);
 
-        InfoPlayerSingleton.Instance.currentLevel = 1;
+        GameManager.Ins.currentLevel = 1;
         StartCoroutine(endManager.LoadMainMenu());
     }
 }

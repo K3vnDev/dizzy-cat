@@ -15,7 +15,7 @@ public class LVLTextIndicatorManager : MonoBehaviour
     {
         playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
         tmpText = GetComponent<TextMeshProUGUI>();
-        int currentLevel = InfoPlayerSingleton.Instance.currentLevel;
+        int currentLevel = GameManager.Ins.currentLevel;
         tmpText.text = $"Level {currentLevel}/10";
         StartCoroutine(TextAnimation());
     }
