@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public Rigidbody2D rb;
+    [HideInInspector] public Rigidbody2D rb;
     private ScenarioController scenarioController;
     private float initialGravity;
 
@@ -51,7 +51,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        horizontalAxis = Input.GetAxisRaw("Horizontal");
+        if (!PauseMenuController.Ins.gameIsPaused)
+            horizontalAxis = Input.GetAxisRaw("Horizontal");
 
         HasLandedLogic();
 
@@ -83,8 +84,7 @@ public class PlayerController : MonoBehaviour
 
     private void HasLandedLogic()
     {
-        Vector2 boxPosition = new Vector2(
-            transform.position.x, transform.position.y - transform.localScale.y/2);
+        Vector2 boxPosition = new (transform.position.x, transform.position.y - transform.localScale.y/2);
 
         hasLanded = Physics2D.OverlapBox(boxPosition, boxSize, 6, groundLayer);
     }

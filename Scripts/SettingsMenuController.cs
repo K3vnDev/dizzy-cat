@@ -29,7 +29,7 @@ public class SettingsMenuController : MonoBehaviour
 
     public void OkayButton()
     {
-        backgroundController.GrayBackgroundOut();
+        backgroundController.SetIsOnGrayBackground(false);
         okayButton.transform.localScale = Vector2.one;
         SFXPlayerSingleton.Ins.PlaySound(
             SFXPlayerSingleton.Ins.GetButtonSound("exit"), .1f);

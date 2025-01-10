@@ -165,9 +165,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: PixelifySans-VariableFont_wght SDF 1
   m_EditorClassIdentifier: 
-  hashCode: 657844267
+  hashCode: -867130566
   material: {fileID: -4609638971155369754}
-  materialHashCode: 581052203
+  materialHashCode: -705500966
   m_Version: 1.1.0
   m_SourceFontFileGUID: 9fe81ba3456d1c84994db26795716826
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: 9fe81ba3456d1c84994db26795716826, type: 3}

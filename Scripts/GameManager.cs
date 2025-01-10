@@ -4,9 +4,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Ins;
 
-    public int currentBgColor = 7;
     public bool fsActive = true;
-
     public int currentLevel; // one-indexed
 
     [Header ("Character")]

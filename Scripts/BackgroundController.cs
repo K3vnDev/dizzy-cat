@@ -3,105 +3,86 @@ using UnityEngine;
 
 public class BackgroundController : MonoBehaviour
 {
-    [SerializeField] private float speed;
-    [SerializeField] private GameObject mainMenu;
+    [SerializeField] GameObject mainMenu;
 
-    [Header ("Color Loop")]
-    [SerializeField] private Color[] bgcolors;
-    [SerializeField] private float transitionTime, waitTime;
-    [SerializeField] private AnimationCurve colorTransitionCurve;
-    [SerializeField] private float grayBgTransitionTime;
-    
-    private Vector3 finalPos = new Vector3(-15, -5, 0);
-    private Vector3 originalPos = new Vector3(15, 5, 0);
-    private SpriteRenderer spriteRenderer;
+    [Header ("Colors")]
+    [SerializeField] Color grayColor;
+    [SerializeField] Color[] loopColors;
+
+    [Header ("Time")]
+    [SerializeField] float loopColorsTransitionTime = 2.5f;
+    [SerializeField] float waitTime = 4f;
+    [SerializeField] float grayColorTransitionTime = 0.15f;
+
+    [Header ("Curve")]
+    [SerializeField] AnimationCurve colorTransitionCurve;
+
+    int currentColorIndex = -1;
+    Renderer _renderer;
 
 
     void Start()
     {
-        transform.position = originalPos;
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        _renderer = GetComponent<Renderer>();
+        StartCoroutine(LoopColors());
 
-        StartCoroutine(LoopColors(transitionTime, waitTime,
-            GameManager.Ins.currentBgColor));
+        int newColorIndex = GetRandomColorIndex();
+        currentColorIndex = newColorIndex;
+
+        SetRendererColor(loopColors[currentColorIndex]);
     }
 
-    void Update()
+    Color GetRendererColor() => _renderer.material.GetColor("_PrimaryCol");
+    void SetRendererColor(Color color) => _renderer.material.SetColor("_PrimaryCol", color);
+
+    int GetRandomColorIndex()
     {
-        float deltaSpeed = Time.deltaTime * speed;
+        int randomIndex;
 
-        if (transform.position != finalPos)
-        {
-            transform.position = Vector2.MoveTowards(
-                transform.position, finalPos, deltaSpeed);
-        }
-        else
-        {
-            transform.position = originalPos;
-        }
+        do randomIndex = Random.Range(0, loopColors.Length);
+        while (randomIndex == currentColorIndex);
 
+        return randomIndex;
     }
 
-    public void GrayBackgroundIn()
-    {
-        StopAllCoroutines();
-
-        StartCoroutine(LerpColor(spriteRenderer.color, 
-            bgcolors[bgcolors.Length - 1], grayBgTransitionTime, false));
-    }
-
-    public void GrayBackgroundOut()
+    public void SetIsOnGrayBackground(bool isOnGrayBackground)
     {
         StopAllCoroutines();
 
-        Color targetColor = bgcolors[GameManager.Ins.currentBgColor];
+        Color color = isOnGrayBackground ? grayColor : loopColors[currentColorIndex];
+        StartCoroutine(LerpColor(color, grayColorTransitionTime));
 
-        StartCoroutine(LerpColor(spriteRenderer.color,
-            targetColor, grayBgTransitionTime / 2, true));
+        if (!isOnGrayBackground) StartCoroutine(LoopColors());
     }
 
-    private IEnumerator LoopColors(float trTime, float wtTime, int currentColor)
+    private IEnumerator LoopColors()
     {
         while (true)
         {
-            float step = 0;
-            Color start = spriteRenderer.color;
-            Color target = bgcolors[currentColor];
+            // Wait some time
+            yield return new WaitForSeconds(waitTime);
 
-            while (step < trTime)
-            {
-                spriteRenderer.color = Color.Lerp(
-                    start, target, colorTransitionCurve.Evaluate(step/trTime));
+            currentColorIndex = GetRandomColorIndex();
+            Color targetColor = loopColors[currentColorIndex];
 
-                step += Time.deltaTime;
-                yield return null;
-            }
-            spriteRenderer.color = target;
-            yield return new WaitForSeconds(wtTime);
-
-            currentColor++;
-            if (currentColor >= bgcolors.Length - 1)
-            {
-                currentColor = 0;
-            }
-            GameManager.Ins.currentBgColor = currentColor;
+            // Transitionate color
+            yield return LerpColor(targetColor, loopColorsTransitionTime);
         }
     }
 
-    private IEnumerator LerpColor(Color start, Color target, float time, bool outMode)
+    private IEnumerator LerpColor(Color target, float time)
     {
-        float step = 0;
-        while (step < time)
-        {
-            spriteRenderer.color = Color.Lerp(
-                start, target, colorTransitionCurve.Evaluate(step/time));
+        Color start = GetRendererColor();
+        float elapsed = 0;
 
-            step += Time.deltaTime;
+        while (elapsed < time)
+        {
+            Color color = Color.Lerp(start, target, colorTransitionCurve.Evaluate(elapsed / time));
+            SetRendererColor(color);
+
+            elapsed += Time.deltaTime;
             yield return null;
         }
-        spriteRenderer.color = target;
-
-        if (outMode) StartCoroutine(LoopColors(transitionTime, waitTime,
-            GameManager.Ins.currentBgColor));
+        SetRendererColor(target);
     }
 }

@@ -4,11 +4,7 @@ using UnityEngine.SceneManagement;
 
 public class GoalController : MonoBehaviour
 {
-    [SerializeField] private float speed;
-    [SerializeField] private GameObject[] points;
-
     [SerializeField] private bool isFinal;
-    private bool goingUp = true;
 
     [SerializeField] private float sceneLoadDelay;
     [SerializeField] private GameObject selfParticles;
@@ -25,40 +21,12 @@ public class GoalController : MonoBehaviour
             .GetComponent<PlayerController>();
     }
 
-    private void Update()
-    {
-        MovementLoop();
-    }
-
-    private void MovementLoop()
-    {
-        Vector3 pos = transform.localPosition;
-
-        if (goingUp)
-        {
-            transform.localPosition = Vector2.MoveTowards(
-                pos, points[0].transform.localPosition, speed * Time.deltaTime);
-
-            goingUp = !(pos == points[0].transform.localPosition);
-        }
-        else
-        {
-            transform.localPosition = Vector2.MoveTowards(
-                pos, points[1].transform.localPosition, speed * Time.deltaTime);
-
-            goingUp = (pos == points[1].transform.localPosition);
-        }
-    }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player"))
-        {
-            PickedByPlayer();
-        }
+        if (collision.CompareTag("Player")) Trigger();
     }
 
-    private void PickedByPlayer()
+    private void Trigger()
     {
         playerController.PickFish();
         GetComponent<BoxCollider2D>().enabled = false;

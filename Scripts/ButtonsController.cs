@@ -3,15 +3,15 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-public class ButtonsController : MonoBehaviour, 
-    IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
+public class ButtonsController : MonoBehaviour,
+    IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
 {
-    [SerializeField] private bool specialButton;
-    private bool pointerHovering = false;
+    [SerializeField] bool specialButton;
+    public bool pointerHovering = false;
     public bool isDisabled = false;
 
-    private Vector2 maxScale = Vector2.one, minScale = Vector2.one;
-    private readonly float ANIMATION_TIME = 0.3f;
+    Vector2 maxScale = Vector2.one, minScale = Vector2.one;
+    readonly float ANIMATION_TIME = 0.3f;
 
     [SerializeField] UnityEvent onClick;
     [SerializeField] AnimationCurve easeOutCurve;
@@ -60,8 +60,6 @@ public class ButtonsController : MonoBehaviour,
 
         StopAllCoroutines();
         StartCoroutine(LerpScale(transform.localScale, minScale, ANIMATION_TIME * .75f, easeOutCurve));
-
-        onClick?.Invoke();
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -71,5 +69,10 @@ public class ButtonsController : MonoBehaviour,
             StopAllCoroutines();
             StartCoroutine(LerpScale(transform.localScale, maxScale, ANIMATION_TIME, easeOutCurve));
         }
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        onClick?.Invoke();
     }
 }

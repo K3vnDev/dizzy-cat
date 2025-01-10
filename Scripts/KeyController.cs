@@ -3,110 +3,75 @@ using UnityEngine;
 
 public class KeyController : MonoBehaviour
 {
-    [Header ("Values")]
-    [SerializeField] private float movRotTime;
-    [SerializeField] private float floatingTime;
-    [SerializeField] private float floatingRange;
+    [SerializeField] float moveTime;
+    [SerializeField] AnimationCurve easeInOut;
 
-    [Header ("Animation Curves")]
-    [SerializeField] private AnimationCurve easeInOut;
+    ParticleSystem keyParticles;
 
-    [Header("Particles")]
-    private ParticleSystem keyParticles;
+    Animator lockAnimator, animator;
+    PlayerController playerController;
+    Rigidbody2D rb;
 
+    [Header("SFX")]
+    [SerializeField] AudioClip getKeySound;
+    [SerializeField] AudioClip openLockSound;
 
-    private Transform lockTr;
-    private LockController lockController;
-    private PlayerController playerController;
-
-    [Header ("SFX")]
-    [SerializeField] private AudioClip getKeySound;
-    [SerializeField] private AudioClip openLockSound;
+    bool alreadyTriggered = false;
 
 
     void Start()
     {
-        lockTr = GameObject.FindWithTag("Lock").transform;
-        lockController = GameObject.FindWithTag("Lock")
-            .GetComponent<LockController>();
-        keyParticles = GameObject.FindWithTag("Key Particles")
-            .GetComponent<ParticleSystem>();
-        playerController = GameObject.FindWithTag("Player")
-            .GetComponent<PlayerController>();
+        lockAnimator = GameObject.FindWithTag("Lock").GetComponent<Animator>();
+        keyParticles = GameObject.FindWithTag("Key Particles").GetComponent<ParticleSystem>();
+        playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
 
-        StartCoroutine(FloatingAnimation());
+        animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (collision.CompareTag("Player"))
+        if (other.CompareTag("Player") && !alreadyTriggered)
         {
-            StopAllCoroutines();
-            StartCoroutine(MoveAndRotateToLock());
-            keyParticles.Stop();
-            SFXPlayerSingleton.Ins.PlaySound(getKeySound, .15f);
-            GetComponent<BoxCollider2D>().enabled = false;
+            Trigger();
+        }
+        else if (other.CompareTag("Lock"))
+        {
+            animator.SetTrigger("enter");
         }
     }
-    private IEnumerator MoveAndRotateToLock()
+
+    void Trigger()
     {
+        // Stop levitanting effect
+        GetComponent<LevitateController>().StopAllCoroutines();
         playerController.playerCanMove = false;
+        animator.SetTrigger("pick");
 
-        Vector2 startPos = transform.position, targetPos = lockTr.position;
-        Quaternion startRot = transform.localRotation, targetRot = Quaternion.Euler(
-            0, 0, transform.localRotation.z - 90);
-        
-        float step = 0;
-        while (step < movRotTime)
+        StartCoroutine(MoveToLock());
+
+        keyParticles.Stop();
+        SFXPlayerSingleton.Ins.PlaySound(getKeySound, .15f);
+        alreadyTriggered = true;
+    }
+
+    private IEnumerator MoveToLock()
+    {
+        Vector2 start = transform.position, target = lockAnimator.transform.position;
+        float elapsed = 0;
+
+        while (elapsed < moveTime)
         {
-            transform.position = Vector2.Lerp(
-                startPos, targetPos, easeInOut.Evaluate(step/movRotTime));
+            transform.position = Vector2.Lerp(start, target, easeInOut.Evaluate(elapsed / moveTime));
 
-            transform.localRotation = Quaternion.Lerp(
-                startRot, targetRot, easeInOut.Evaluate(step / movRotTime));
-
-            step += Time.deltaTime;
+            elapsed += Time.deltaTime;
             yield return null;
         }
-        transform.position = targetPos;
-        transform.localRotation = targetRot;
+        transform.position = target;
 
         SFXPlayerSingleton.Ins.PlaySound(openLockSound, .15f);
-        lockController.triggered = true;
+
+        lockAnimator.SetTrigger("unlock");
         playerController.playerCanMove = true;
-    }
-
-    private IEnumerator FloatingAnimation()
-    {
-        Vector2 upTarget = new Vector2(
-            transform.localPosition.x, transform.localPosition.y + floatingRange);
-
-        Vector2 downTarget = new Vector2(
-            transform.localPosition.x, transform.localPosition.y - floatingRange);
-
-        while (true)
-        {
-            float step = 0;
-            Vector2 start = transform.localPosition;
-
-            while (step < floatingTime)
-            {
-                transform.localPosition = Vector2.Lerp(start, upTarget, step / floatingTime);
-                step += Time.deltaTime;
-                yield return null;
-            }
-            transform.localPosition = upTarget;
-
-            step = 0;
-            start = transform.localPosition;
-
-            while (step < floatingTime)
-            {
-                transform.localPosition = Vector2.Lerp(start, downTarget, step / floatingTime);
-                step += Time.deltaTime;
-                yield return null;
-            }
-            transform.localPosition = downTarget;
-        }
     }
 }

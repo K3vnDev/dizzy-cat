@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8662943031506069371}
   - component: {fileID: 8662943031506069368}
-  - component: {fileID: 2795763176528039032}
   - component: {fileID: 2385367448200004574}
   - component: {fileID: 8662943031506069254}
   - component: {fileID: 8662943031506069370}
@@ -88,27 +87,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &2795763176528039032
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8662943031506069255}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 99dc9960181211e44a8881d8af470fb4, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!58 &2385367448200004574
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -162,7 +140,7 @@ MonoBehaviour:
   circleCollider: {fileID: 2385367448200004574}
   isFalling: 0
   cantRotateSign: {fileID: 4755206598921473901, guid: 2a4132b0ac4b89843aef9f499c29cfa3, type: 3}
-  boxSize: {x: 0.5, y: 0.1}
+  boxSize: {x: 0.5, y: 0.03}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8

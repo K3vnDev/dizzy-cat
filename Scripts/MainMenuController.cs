@@ -1,18 +1,20 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour
 {
-    [SerializeField] private float scaleTime, scaleFactor;
-    [SerializeField] private GameObject characterSelection, settingsMenu;
-    [SerializeField] private BackgroundController backgroundController;
-
-    [SerializeField] private GameObject[] mainMenuButtons;
+    [SerializeField] float scaleTime, scaleFactor;
+    [SerializeField] GameObject characterSelection, settingsMenu;
+    [SerializeField] BackgroundController backgroundController;
+    [SerializeField] GameObject[] mainMenuButtons;
 
     private void Start()
     {
         Cursor.visible = true;
     }
+
+
 
     public void PlayButton()
     {
@@ -23,7 +25,7 @@ public class MainMenuController : MonoBehaviour
 
     public void SkinsButton()
     {
-        backgroundController.GrayBackgroundIn();
+        backgroundController.SetIsOnGrayBackground(true);
         SFXPlayerSingleton.Ins.PlaySound(
             SFXPlayerSingleton.Ins.GetButtonSound("enter"), .1f);
         ResetButtonsScale();
@@ -33,7 +35,7 @@ public class MainMenuController : MonoBehaviour
 
     public void SettingsButton()
     {
-        backgroundController.GrayBackgroundIn();
+        backgroundController.SetIsOnGrayBackground(true);
         SFXPlayerSingleton.Ins.PlaySound(
             SFXPlayerSingleton.Ins.GetButtonSound("enter"), .1f);
 

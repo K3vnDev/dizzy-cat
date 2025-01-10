@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,9 +7,19 @@ public class PauseMenuController : MonoBehaviour
     public bool gameIsPaused = false;
     CanvasGroup canvasGroup;
 
+    public static PauseMenuController Ins;
+    [SerializeField] TextMeshProUGUI currentLevelIndicator;
+
+    private void Awake()
+    {
+        if (Ins == null) Ins = this;
+        else Destroy(gameObject);
+    }
+
     private void Start()
     {
         canvasGroup = GetComponent<CanvasGroup>();
+        SetCurrentLevelIndicatorText();
     }
 
     private void Update()
@@ -43,5 +54,11 @@ public class PauseMenuController : MonoBehaviour
         Time.timeScale = 1f;
 
         SceneManager.LoadScene("MainMenu");
+    }
+
+    void SetCurrentLevelIndicatorText()
+    {
+        int currentLevel = GameManager.Ins.currentLevel;
+        currentLevelIndicator.text = $"Level {currentLevel}/10";
     }
 }

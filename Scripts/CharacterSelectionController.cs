@@ -8,10 +8,6 @@ public class CharacterSelectionController : MonoBehaviour
     readonly GameObject[] characterButtons = new GameObject[8];
     GameObject charactersGrid;
 
-    public delegate void SwapCharacterEventHandler(int characterIndex);
-    public event SwapCharacterEventHandler OnSwapCharacter;
-    
-
     private void Start()
     {
         charactersGrid = GameObject.FindWithTag("CharactersGrid");
@@ -25,13 +21,11 @@ public class CharacterSelectionController : MonoBehaviour
 
         GameManager.Ins.selectedCharacter = characterIndex;
         UpdateSelectorPosition();
-
-        OnSwapCharacter?.Invoke(characterIndex);
     }
 
     public void OkayButton()
     {
-        backgroundController.GrayBackgroundOut();
+        backgroundController.SetIsOnGrayBackground(false);
         okayButton.transform.localScale = Vector2.one;
         SFXPlayerSingleton.Ins.PlaySound(
             SFXPlayerSingleton.Ins.GetButtonSound("exit"), .1f);
@@ -43,6 +37,7 @@ public class CharacterSelectionController : MonoBehaviour
     {
         int character = GameManager.Ins.selectedCharacter;
         _selector.transform.SetParent(characterButtons[character].transform, false);
+        _selector.transform.SetAsFirstSibling();
     }
 
     private void InitCharacterButtons()
@@ -60,7 +55,9 @@ public class CharacterSelectionController : MonoBehaviour
 
             characterButtons[i] = newCharacterButton;
 
-            CharacterSelector characterSelector = newCharacterButton.GetComponent<CharacterSelector>();
+            CharacterSelector characterSelector = newCharacterButton
+                .GetComponentInChildren<CharacterSelector>();
+
             characterSelector.SetCharacterIndex(i);
         }
 
