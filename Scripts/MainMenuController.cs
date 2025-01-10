@@ -14,20 +14,16 @@ public class MainMenuController : MonoBehaviour
         Cursor.visible = true;
     }
 
-
-
     public void PlayButton()
     {
-        SFXPlayerSingleton.Ins.PlaySound(
-            SFXPlayerSingleton.Ins.GetButtonSound("play"), .1f);
+        SFXPlayer.Ins.PlayButtonSound(SFXPlayer.ButtonSound.Play, .1f);
         SceneManager.LoadScene(GameManager.Ins.currentLevel);
     }
 
     public void SkinsButton()
     {
         backgroundController.SetIsOnGrayBackground(true);
-        SFXPlayerSingleton.Ins.PlaySound(
-            SFXPlayerSingleton.Ins.GetButtonSound("enter"), .1f);
+        SFXPlayer.Ins.PlayButtonSound(SFXPlayer.ButtonSound.Enter, .1f);
         ResetButtonsScale();
 
         SwapMenuManager.Ins.ToSkins();
@@ -36,23 +32,19 @@ public class MainMenuController : MonoBehaviour
     public void SettingsButton()
     {
         backgroundController.SetIsOnGrayBackground(true);
-        SFXPlayerSingleton.Ins.PlaySound(
-            SFXPlayerSingleton.Ins.GetButtonSound("enter"), .1f);
-
+        SFXPlayer.Ins.PlayButtonSound(SFXPlayer.ButtonSound.Enter, .1f);
         SwapMenuManager.Ins.ToSettings();
     }
 
     public void ExitButtom()
     {
-        SFXPlayerSingleton.Ins.PlaySound(SFXPlayerSingleton.Ins.GetButtonSound("exit"), .1f);
+        SFXPlayer.Ins.PlayButtonSound(SFXPlayer.ButtonSound.Exit, .1f);
         Application.Quit();
     }
 
     private void ResetButtonsScale()
     {
         foreach (GameObject button  in mainMenuButtons)
-        {
             button.transform.localScale = Vector2.one;
-        }
     }
 }

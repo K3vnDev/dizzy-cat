@@ -71,7 +71,7 @@ public class EndManager : MonoBehaviour
         float step = 0;
 
         yield return new WaitForSeconds(bgAppearDelay);
-        SFXPlayerSingleton.Ins.PlaySound(winSound, 0);
+        SFXPlayer.Ins.PlaySound(winSound, 0);
 
         while (step < bgAppearTime)
         {

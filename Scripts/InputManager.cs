@@ -5,7 +5,7 @@ public class InputManager : MonoBehaviour
     public static InputManager Ins;
     Controls controls;
 
-    public GameActions Game;
+    public GameActions Game = new (0f);
     public Controls.UIActions UI;
 
     public class GameActions

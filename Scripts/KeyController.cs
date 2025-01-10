@@ -49,7 +49,7 @@ public class KeyController : MonoBehaviour
         StartCoroutine(MoveToLock());
 
         keyParticles.Stop();
-        SFXPlayerSingleton.Ins.PlaySound(getKeySound, .15f);
+        SFXPlayer.Ins.PlaySound(getKeySound, .15f);
         alreadyTriggered = true;
     }
 
@@ -67,7 +67,7 @@ public class KeyController : MonoBehaviour
         }
         transform.position = target;
 
-        SFXPlayerSingleton.Ins.PlaySound(openLockSound, .15f);
+        SFXPlayer.Ins.PlaySound(openLockSound, .15f);
 
         lockAnimator.SetTrigger("unlock");
         playerController.playerCanMove = true;

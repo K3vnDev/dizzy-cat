@@ -3,19 +3,12 @@ using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour
 {
-    [HideInInspector] public Rigidbody2D rb;
-    ScenarioController scenarioController;
-    float initialGravity;
-
-    public Collider2D circleCollider;
-
-    public bool isFalling = false;
-    bool fishCollected = false;
-    [SerializeField] GameObject cantRotateSign;
-
     [Header ("Ground Checker")]
     [SerializeField] Vector2 boxSize;
     [SerializeField] LayerMask groundLayer;
+
+    public bool isGrounded = false;
+    public bool isFalling = false;
 
     [Header ("Player Particles")]
     [SerializeField] GameObject playerParticles;
@@ -27,40 +20,41 @@ public class PlayerController : MonoBehaviour
     [SerializeField] AudioClip rotateSound;
     [SerializeField] AudioClip catMeowSound;
 
+    [Space]
+    [SerializeField] GameObject cantRotateSign;
+
+    [HideInInspector] public Rigidbody2D rb;
+    float initialGravity;
+
+    [HideInInspector] public Collider2D circleCollider;
+    ScenarioController scenarioController;
+    PlayerEventsManager playerEvents;
+
     float horizontalAxis;
+    bool fishCollected = false;
+    Queue<float> inputBuffer;
+    int ignoreCatSoundsLeft = 0;
 
     readonly float FISH_PARTICLES_OFFSET = 0.25f;
-    readonly float MEOW_SOUND_DELAY = 0.25f;
     readonly float INPUT_BUFFER_TIME = 0.13f;
 
-    Queue<float> inputBuffer;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         scenarioController = GameObject.FindGameObjectWithTag("Scenario").GetComponent<ScenarioController>();
+        playerEvents = GetComponent<PlayerEventsManager>();
 
         initialGravity = rb.gravityScale;
-
-        SetCharacterSprite();
-
-        Invoke(nameof(PlayMeowSound), MEOW_SOUND_DELAY);
-
         inputBuffer = new();
-    }
 
-    void PlayMeowSound() => SFXPlayerSingleton.Ins.PlaySound(catMeowSound, 0.2f);
-
-    void SetCharacterSprite()
-    {
-        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-        Sprite characterSprite = GameManager.Ins.characterSprites[GameManager.Ins.selectedCharacter];
-
-        spriteRenderer.sprite = characterSprite;
+        playerEvents.OnHitGround += HandleCatSound;
     }
 
     void Update()
     {
+        GroundCheckingLogic();
+
         if (!PauseMenuController.Ins.gameIsPaused)
         {
             horizontalAxis = InputManager.Ins.Game.RotateDirection;
@@ -72,7 +66,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (IsOnGround()) 
+        if (isGrounded) 
         {
             rb.velocity = new Vector2 (0, rb.velocity.y);
             HandleRotate();
@@ -84,6 +78,8 @@ public class PlayerController : MonoBehaviour
             rb.gravityScale = 0;
         }
         else rb.gravityScale = initialGravity;
+
+        isFalling = !scenarioController.rotating && !isGrounded;
     }
 
     void HandleRotate()
@@ -93,21 +89,21 @@ public class PlayerController : MonoBehaviour
         if (!scenarioController.rotating && playerCanMove && horizontalAxis != 0)
         {
             scenarioController.SetRotation(horizontalAxis);
-            SFXPlayerSingleton.Ins.PlaySound(rotateSound, .2f);
+            PlaySound(rotateSound, .2f);
             inputBuffer.Clear();
         }
         else if (!playerCanMove && this.horizontalAxis != 0
             && GameObject.FindWithTag("Cant Rotate") == null && !fishCollected)
         {
             Instantiate(cantRotateSign);
-            SFXPlayerSingleton.Ins.PlaySound(errorSound, .1f);
+            PlaySound(errorSound, .1f);
         }
     }
 
-    bool IsOnGround()
+    void GroundCheckingLogic()
     {
         Vector2 boxPosition = new (transform.position.x, transform.position.y - transform.localScale.y / 2);
-        return Physics2D.OverlapBox(boxPosition, boxSize, 6, groundLayer);
+        isGrounded = Physics2D.OverlapBox(boxPosition, boxSize, 6, groundLayer);
     }
 
     public void PickFish()
@@ -116,7 +112,7 @@ public class PlayerController : MonoBehaviour
 
         Instantiate(playerParticles, particlesPos, Quaternion.Euler(Vector3.zero));
 
-        SFXPlayerSingleton.Ins.PlaySound(getFishSound, 0.1f);
+        PlaySound(getFishSound, 0.1f);
 
         playerCanMove = false;
         fishCollected = true;
@@ -131,6 +127,27 @@ public class PlayerController : MonoBehaviour
     {
         try { return inputBuffer.Peek(); }
         catch { return 0; }
+    }
+
+    void PlaySound(AudioClip sound, float pitchRange)
+    {
+        SFXPlayer.Ins.PlaySound(sound, pitchRange);
+    }
+
+    void HandleCatSound()
+    {
+        if (ignoreCatSoundsLeft <= 0 && !fishCollected)
+        {
+            PlaySound(catMeowSound, 0.25f);
+            ignoreCatSoundsLeft = Random.Range(2, 5);
+            return;
+        }
+        else ignoreCatSoundsLeft--;
+    }
+
+    void OnDisable()
+    {
+        playerEvents.OnHitGround -= HandleCatSound;
     }
 
     void OnDrawGizmos()

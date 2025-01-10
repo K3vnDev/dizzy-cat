@@ -7,7 +7,7 @@ public class GameManager : MonoBehaviour
     public bool fsActive = true;
     public int currentLevel; // one-indexed
 
-    [Header ("Character")]
+    [Header("Character")]
     public int selectedCharacter = 0;
     public Sprite[] characterSprites;
 

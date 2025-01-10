@@ -39,14 +39,12 @@ public class PauseMenuController : MonoBehaviour
 
         if (!gameIsPaused)
         {
-            AudioClip enterSound = SFXPlayerSingleton.Ins.GetButtonSound("enter");
-            SFXPlayerSingleton.Ins.PlaySound(enterSound, .1f);
+            SFXPlayer.Ins.PlayButtonSound(SFXPlayer.ButtonSound.Enter, .1f);
         }
     }
     public void MainMenuButton()
     {
-        AudioClip exitSound = SFXPlayerSingleton.Ins.GetButtonSound("exit");
-        SFXPlayerSingleton.Ins.PlaySound(exitSound, .1f);
+        SFXPlayer.Ins.PlayButtonSound(SFXPlayer.ButtonSound.Exit, .1f);
 
         MusicPlayerSingleton.Ins.ToggleVolume(false);
         Time.timeScale = 1f;
