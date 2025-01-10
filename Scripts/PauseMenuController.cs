@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class PauseMenuController : MonoBehaviour
@@ -20,11 +21,8 @@ public class PauseMenuController : MonoBehaviour
     {
         canvasGroup = GetComponent<CanvasGroup>();
         SetCurrentLevelIndicatorText();
-    }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape)) TogglePause();
+        InputManager.Ins.UI.Pause.performed += HandleTogglePause;
     }
 
     public void TogglePause()
@@ -60,5 +58,12 @@ public class PauseMenuController : MonoBehaviour
     {
         int currentLevel = GameManager.Ins.currentLevel;
         currentLevelIndicator.text = $"Level {currentLevel}/10";
+    }
+
+    void HandleTogglePause(InputAction.CallbackContext _) => TogglePause();
+
+    private void OnDisable()
+    {
+        InputManager.Ins.UI.Pause.performed -= HandleTogglePause;
     }
 }

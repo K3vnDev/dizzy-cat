@@ -10,7 +10,6 @@ public class KeyController : MonoBehaviour
 
     Animator lockAnimator, animator;
     PlayerController playerController;
-    Rigidbody2D rb;
 
     [Header("SFX")]
     [SerializeField] AudioClip getKeySound;
@@ -26,7 +25,6 @@ public class KeyController : MonoBehaviour
         playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
 
         animator = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody2D>();
     }
 
     private void OnTriggerEnter2D(Collider2D other)

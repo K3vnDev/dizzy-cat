@@ -1,35 +1,41 @@
-using System.Collections;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour
 {
     [HideInInspector] public Rigidbody2D rb;
-    private ScenarioController scenarioController;
-    private float initialGravity;
+    ScenarioController scenarioController;
+    float initialGravity;
 
     public Collider2D circleCollider;
 
     public bool isFalling = false;
-    private bool fishCollected = false;
-    [SerializeField] private GameObject cantRotateSign;
+    bool fishCollected = false;
+    [SerializeField] GameObject cantRotateSign;
 
     [Header ("Ground Checker")]
-    [SerializeField] private Vector2 boxSize;
-    [SerializeField] private LayerMask groundLayer;
-    private bool hasLanded = false;
+    [SerializeField] Vector2 boxSize;
+    [SerializeField] LayerMask groundLayer;
 
     [Header ("Player Particles")]
-    [SerializeField] private GameObject playerParticles;
+    [SerializeField] GameObject playerParticles;
     public bool playerCanMove = true;
 
     [Header("SFX")]
-    [SerializeField] private AudioClip getFishSound;
-    [SerializeField] private AudioClip errorSound;
-    [SerializeField] private AudioClip rotateSound;
-    [SerializeField] private AudioClip catMeowSound;
-    private float horizontalAxis;
+    [SerializeField] AudioClip getFishSound;
+    [SerializeField] AudioClip errorSound;
+    [SerializeField] AudioClip rotateSound;
+    [SerializeField] AudioClip catMeowSound;
 
-    private void Start()
+    float horizontalAxis;
+
+    readonly float FISH_PARTICLES_OFFSET = 0.25f;
+    readonly float MEOW_SOUND_DELAY = 0.25f;
+    readonly float INPUT_BUFFER_TIME = 0.13f;
+
+    Queue<float> inputBuffer;
+
+    void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         scenarioController = GameObject.FindGameObjectWithTag("Scenario").GetComponent<ScenarioController>();
@@ -38,8 +44,12 @@ public class PlayerController : MonoBehaviour
 
         SetCharacterSprite();
 
-        StartCoroutine(MeowSound());
+        Invoke(nameof(PlayMeowSound), MEOW_SOUND_DELAY);
+
+        inputBuffer = new();
     }
+
+    void PlayMeowSound() => SFXPlayerSingleton.Ins.PlaySound(catMeowSound, 0.2f);
 
     void SetCharacterSprite()
     {
@@ -49,28 +59,23 @@ public class PlayerController : MonoBehaviour
         spriteRenderer.sprite = characterSprite;
     }
 
-    private void Update()
+    void Update()
     {
         if (!PauseMenuController.Ins.gameIsPaused)
-            horizontalAxis = Input.GetAxisRaw("Horizontal");
+        {
+            horizontalAxis = InputManager.Ins.Game.RotateDirection;
 
-        HasLandedLogic();
+            if (horizontalAxis != 0)
+            {
+                inputBuffer.Enqueue(horizontalAxis);
+                Invoke(nameof(DequeueInputBuffer), INPUT_BUFFER_TIME);
+            }
+        }
 
-        if (hasLanded)
+        if (IsOnGround()) 
         {
             rb.velocity = new Vector2 (0, rb.velocity.y);
-
-            if (!scenarioController.rotating && playerCanMove && horizontalAxis != 0)
-            {
-                scenarioController.SetRotation(horizontalAxis);
-                SFXPlayerSingleton.Ins.PlaySound(rotateSound, .2f);
-            }
-            else if (!playerCanMove && horizontalAxis != 0 
-                && GameObject.FindWithTag("Cant Rotate") == null && !fishCollected)
-            {
-                Instantiate(cantRotateSign);
-                SFXPlayerSingleton.Ins.PlaySound(errorSound, .1f);
-            }
+            HandleRotate();
         }
 
         if (scenarioController.rotating)
@@ -79,39 +84,59 @@ public class PlayerController : MonoBehaviour
             rb.gravityScale = 0;
         }
         else rb.gravityScale = initialGravity;
-
     }
 
-    private void HasLandedLogic()
+    void HandleRotate()
     {
-        Vector2 boxPosition = new (transform.position.x, transform.position.y - transform.localScale.y/2);
+        float horizontalAxis = PeekInputBuffer();
 
-        hasLanded = Physics2D.OverlapBox(boxPosition, boxSize, 6, groundLayer);
+        if (!scenarioController.rotating && playerCanMove && horizontalAxis != 0)
+        {
+            scenarioController.SetRotation(horizontalAxis);
+            SFXPlayerSingleton.Ins.PlaySound(rotateSound, .2f);
+            inputBuffer.Clear();
+        }
+        else if (!playerCanMove && this.horizontalAxis != 0
+            && GameObject.FindWithTag("Cant Rotate") == null && !fishCollected)
+        {
+            Instantiate(cantRotateSign);
+            SFXPlayerSingleton.Ins.PlaySound(errorSound, .1f);
+        }
+    }
+
+    bool IsOnGround()
+    {
+        Vector2 boxPosition = new (transform.position.x, transform.position.y - transform.localScale.y / 2);
+        return Physics2D.OverlapBox(boxPosition, boxSize, 6, groundLayer);
     }
 
     public void PickFish()
     {
-        Vector2 particlesPos = new Vector2(
-            transform.position.x, transform.position.y - .25f);
+        Vector2 particlesPos = new (transform.position.x, transform.position.y - FISH_PARTICLES_OFFSET);
 
         Instantiate(playerParticles, particlesPos, Quaternion.Euler(Vector3.zero));
 
         SFXPlayerSingleton.Ins.PlaySound(getFishSound, 0.1f);
+
         playerCanMove = false;
         fishCollected = true;
     }
 
-    private IEnumerator MeowSound()
+    void DequeueInputBuffer()
     {
-        yield return new WaitForSeconds(.25f);
-        SFXPlayerSingleton.Ins.PlaySound(catMeowSound, .2f);
+        if (inputBuffer.Count > 0) inputBuffer.Dequeue();
     }
 
-    private void OnDrawGizmos()
+    float PeekInputBuffer()
+    {
+        try { return inputBuffer.Peek(); }
+        catch { return 0; }
+    }
+
+    void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(
-            new Vector2(transform.position.x, transform.position.y 
-                - transform.localScale.y / 2), boxSize);
+        Vector2 position = new(transform.position.x, transform.position.y - transform.localScale.y / 2);
+        Gizmos.DrawWireCube(position, boxSize);
     }
 }

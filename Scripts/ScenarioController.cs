@@ -15,8 +15,10 @@ public class ScenarioController : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    public void SetRotation(float direction)
+    public void SetRotation(float rawDirection)
     {
+        int direction = (int) Mathf.Sign(rawDirection);
+
         rotating = true;
         zRotation -= 90 * direction;
 
