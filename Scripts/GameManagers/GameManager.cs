@@ -13,12 +13,13 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Ins == null) 
+        if (Ins != null && Ins != this)
         {
-            Ins = this;
-            DontDestroyOnLoad(gameObject);
+            Destroy(gameObject);
+            return;
         }
-        else Destroy(gameObject);
+        Ins = this;
+        DontDestroyOnLoad(gameObject);
 
         QualitySettings.vSyncCount = 1;
     }

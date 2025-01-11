@@ -6,8 +6,6 @@ using UnityEngine.UI;
 public class SettingsMenuController : MonoBehaviour
 {
     [SerializeField] BackgroundController backgroundController;
-    [SerializeField] GameObject okayButton, mainMenu;
-    [SerializeField] AudioMixer musicMixer, sfxMixer;
     [SerializeField] AudioClip sliderSound, fs_sound1, fs_sound2;
     [SerializeField] TextMeshProUGUI music_voltext, sfx_voltext;
     [SerializeField] AnimationCurve curve;
@@ -18,11 +16,9 @@ public class SettingsMenuController : MonoBehaviour
 
     private void Start()
     {
-        ChangeMusicVolume(MusicPlayerSingleton.Ins.volume);
-        music_slider.value = MusicPlayerSingleton.Ins.volume;
+        ChangeMusicVolume(MusicPlayer.Ins.currentVolume);
 
-        ChangeSFXVolume(SFXPlayer.Ins.audioMixerVol);
-        sfx_slider.value = SFXPlayer.Ins.audioMixerVol;
+        ChangeSFXVolume(SFXPlayer.Ins.currentVolume);
 
         fullscreen_toggle.isOn = GameManager.Ins.fsActive;
     }
@@ -30,31 +26,29 @@ public class SettingsMenuController : MonoBehaviour
     public void OkayButton()
     {
         backgroundController.SetIsOnGrayBackground(false);
-        okayButton.transform.localScale = Vector2.one;
-
         SFXPlayer.Ins.PlayButtonSound(SFXPlayer.ButtonSound.Exit, .1f);
-
         SwapMenuManager.Ins.ToMain();
     }
 
     public void ChangeMusicVolume(float vol)
     {
-        float mainVolume = (curve.Evaluate(vol/100) * 80) - 80;
-        musicMixer.SetFloat("Volume", mainVolume);
+        MusicPlayer.Ins.SetVolume(vol);
         music_voltext.text = vol.ToString();
 
-        MusicPlayerSingleton.Ins.volume = vol;
+        MusicPlayer.Ins.currentVolume = vol;
         PlaySliderSound();
+
+        music_slider.value = vol;
     }
 
     public void ChangeSFXVolume(float vol)
     {
-        float mainVolume = (curve.Evaluate(vol / 100) * 80) - 80;
-        sfxMixer.SetFloat("Volume", mainVolume);
+        SFXPlayer.Ins.SetVolume(vol);
         sfx_voltext.text = vol.ToString();
 
-        SFXPlayer.Ins.audioMixerVol = vol;
         PlaySliderSound();
+
+        sfx_slider.value = vol;
     }
 
     private void PlaySliderSound()

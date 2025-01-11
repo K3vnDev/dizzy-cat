@@ -35,7 +35,7 @@ public class PauseMenuController : MonoBehaviour
         Time.timeScale = gameIsPaused ? 0 : 1;
         Cursor.visible = gameIsPaused;
 
-        MusicPlayerSingleton.Ins.ToggleVolume(gameIsPaused);
+        MusicPlayer.Ins.LowerVolume(gameIsPaused);
 
         if (!gameIsPaused)
         {
@@ -46,10 +46,10 @@ public class PauseMenuController : MonoBehaviour
     {
         SFXPlayer.Ins.PlayButtonSound(SFXPlayer.ButtonSound.Exit, .1f);
 
-        MusicPlayerSingleton.Ins.ToggleVolume(false);
+        MusicPlayer.Ins.LowerVolume(false);
         Time.timeScale = 1f;
 
-        SceneManager.LoadScene("MainMenu");
+        TransitionManager.Ins.LoadScene(TMScene.MainMenu, TMTransition.LensCircle);
     }
 
     void SetCurrentLevelIndicatorText()

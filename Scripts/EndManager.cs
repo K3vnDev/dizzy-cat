@@ -87,7 +87,7 @@ public class EndManager : MonoBehaviour
     private IEnumerator StopMusic(float time)
     {
         AudioSource musicSource =
-            MusicPlayerSingleton.Ins.audioSource;
+            MusicPlayer.Ins.audioSource;
 
         float start = musicSource.volume, target = 0, step = 0;
         yield return new WaitForSeconds(stopMusicDelay);
@@ -123,7 +123,7 @@ public class EndManager : MonoBehaviour
         bgImage.color = targetColor;
 
         AudioSource musicSource =
-            MusicPlayerSingleton.Ins.audioSource;
+            MusicPlayer.Ins.audioSource;
         musicSource.volume = .5f;
         musicSource.Play();
 

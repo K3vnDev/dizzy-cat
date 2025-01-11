@@ -1,10 +1,9 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BackgroundController : MonoBehaviour
 {
-    [SerializeField] GameObject mainMenu;
-
     [Header ("Colors")]
     [SerializeField] Color grayColor;
     [SerializeField] Color[] loopColors;
@@ -18,12 +17,12 @@ public class BackgroundController : MonoBehaviour
     [SerializeField] AnimationCurve colorTransitionCurve;
 
     int currentColorIndex = -1;
-    Renderer _renderer;
+    Image image;
 
 
     void Start()
     {
-        _renderer = GetComponent<Renderer>();
+        image = GetComponent<Image>();
         StartCoroutine(LoopColors());
 
         int newColorIndex = GetRandomColorIndex();
@@ -32,8 +31,8 @@ public class BackgroundController : MonoBehaviour
         SetRendererColor(loopColors[currentColorIndex]);
     }
 
-    Color GetRendererColor() => _renderer.material.GetColor("_PrimaryCol");
-    void SetRendererColor(Color color) => _renderer.material.SetColor("_PrimaryCol", color);
+    Color GetRendererColor() => image.material.GetColor("_PrimaryCol");
+    void SetRendererColor(Color color) => image.material.SetColor("_PrimaryCol", color);
 
     int GetRandomColorIndex()
     {

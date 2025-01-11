@@ -6,9 +6,7 @@ using UnityEngine.EventSystems;
 public class ButtonsController : MonoBehaviour,
     IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
 {
-    [SerializeField] bool specialButton;
-    public bool pointerHovering = false;
-    public bool isDisabled = false;
+    public bool specialButton, pointerHovering = false, disabled = false, disabledInGame = false;
 
     Vector2 maxScale = Vector2.one, minScale = Vector2.one;
     readonly float ANIMATION_TIME = 0.3f;
@@ -39,7 +37,7 @@ public class ButtonsController : MonoBehaviour,
     //Hover
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (isDisabled) return;
+        if (disabled || IsDisabled()) return;
 
         StopAllCoroutines();
         StartCoroutine(LerpScale(transform.localScale, maxScale, ANIMATION_TIME, easeOutCurve));
@@ -56,7 +54,7 @@ public class ButtonsController : MonoBehaviour,
     //Click
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (isDisabled) return;
+        if (IsDisabled()) return;
 
         StopAllCoroutines();
         StartCoroutine(LerpScale(transform.localScale, minScale, ANIMATION_TIME * .75f, easeOutCurve));
@@ -73,6 +71,23 @@ public class ButtonsController : MonoBehaviour,
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (IsDisabled()) return;
+
         onClick?.Invoke();
+    }
+    private bool IsDisabled()
+    {
+        bool isTransitioning = TransitionManager.Ins.CurrentTransition != TMTransition.None;
+
+        bool isDisabledInGame = false;
+
+        if (disabledInGame)
+        {
+            PauseMenuController pauseMenu = GameObject
+                .FindWithTag("Pause Menu").GetComponent<PauseMenuController>();
+
+            if (pauseMenu != null) isDisabledInGame = !pauseMenu.gameIsPaused;
+        }
+        return isTransitioning || disabled || isDisabledInGame;
     }
 }

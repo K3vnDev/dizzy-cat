@@ -21,15 +21,19 @@ public class InputManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Ins != null && Ins != this)
+        {
+            Destroy(this);
+            return;
+        }
+        Ins = this;
+
         controls = new();
         UI = controls.UI;
-
-        if (Ins == null) Ins = this;
-        else Destroy(gameObject);
     }
 
-    private void OnEnable() => controls.Enable();
-    private void OnDisable() => controls.Disable();
+    private void OnEnable() => controls?.Enable();
+    private void OnDisable() => controls?.Disable();
 
     void HandleGameActions()
     {

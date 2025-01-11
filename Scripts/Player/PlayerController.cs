@@ -138,11 +138,11 @@ public class PlayerController : MonoBehaviour
     {
         if (ignoreCatSoundsLeft <= 0 && !fishCollected)
         {
-            PlaySound(catMeowSound, 0.25f);
-            ignoreCatSoundsLeft = Random.Range(2, 5);
+            PlaySound(catMeowSound, 0.33f);
+            ignoreCatSoundsLeft = Random.Range(4, 10);
             return;
         }
-        else ignoreCatSoundsLeft--;
+        ignoreCatSoundsLeft--;
     }
 
     void OnDisable()

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MenuLevelIndicatorController : MonoBehaviour
 {
-    readonly float GAP = 20f, SPEED = 350f;
+    readonly float GAP = 0.02f, SPEED = 35f;
 
     [SerializeField] ButtonsController buttonController;
     RectTransform rectTransform;
@@ -19,7 +19,6 @@ public class MenuLevelIndicatorController : MonoBehaviour
 
         initialPosition = transform.position;
         extendedPosition = new(transform.position.x, transform.position.y - GAP - rectTransform.rect.height);
-
         textMeshPro.text = $"Level {GameManager.Ins.currentLevel}";
     }
 

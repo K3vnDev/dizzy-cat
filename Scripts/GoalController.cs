@@ -39,16 +39,14 @@ public class GoalController : MonoBehaviour
         }
         else
         {
-            int activeScene = SceneManager.GetActiveScene().buildIndex + 1;
-            GameManager.Ins.currentLevel = activeScene;
-            StartCoroutine(LoadNextScene(activeScene));
+            StartCoroutine(LoadNextScene());
         }
     }
 
-    private IEnumerator LoadNextScene(int scene)
+    private IEnumerator LoadNextScene()
     {
         yield return new WaitForSeconds(sceneLoadDelay);
-        SceneManager.LoadScene(scene);
+        TransitionManager.Ins.LoadScene(TMScene.NextLevel);
     }
 
     private IEnumerator LoadNextSceneFromLastLevel()
