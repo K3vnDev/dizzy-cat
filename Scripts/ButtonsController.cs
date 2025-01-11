@@ -6,7 +6,11 @@ using UnityEngine.EventSystems;
 public class ButtonsController : MonoBehaviour,
     IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
 {
-    public bool specialButton, pointerHovering = false, disabled = false, disabledInGame = false;
+    public bool specialButton;
+    public bool pointerHovering = false;
+    [Space]
+    public bool disabled = false;
+    public bool disabledInGame = false;
 
     Vector2 maxScale = Vector2.one, minScale = Vector2.one;
     readonly float ANIMATION_TIME = 0.3f;
@@ -77,8 +81,6 @@ public class ButtonsController : MonoBehaviour,
     }
     private bool IsDisabled()
     {
-        bool isTransitioning = TransitionManager.Ins.CurrentTransition != TMTransition.None;
-
         bool isDisabledInGame = false;
 
         if (disabledInGame)
@@ -86,8 +88,9 @@ public class ButtonsController : MonoBehaviour,
             PauseMenuController pauseMenu = GameObject
                 .FindWithTag("Pause Menu").GetComponent<PauseMenuController>();
 
-            if (pauseMenu != null) isDisabledInGame = !pauseMenu.gameIsPaused;
+            if (pauseMenu != null) isDisabledInGame = !pauseMenu.GameIsPaused;
         }
-        return isTransitioning || disabled || isDisabledInGame;
+
+        return TransitionManager.Ins.IsTransitioning || disabled || isDisabledInGame;
     }
 }

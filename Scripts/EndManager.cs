@@ -1,133 +1,87 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Audio;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static System.TimeZoneInfo;
 
 public class EndManager : MonoBehaviour
 {
-    public float nextSceneTime, stopMusicDelay, stopMusicDuration;
-    [SerializeField] AnimationCurve stopMusicCurve, textPopUpCurve, transitionCurve;
+    [SerializeField] float sceneWaitTime = 2f, initialWaitTime = 0.3f;
+    [SerializeField] float fadeOutMusicTime = 1f;
 
-    [SerializeField] GameObject[] uiTexts;
-    [SerializeField] float textPopUpTime, textPopUpDelay, textStartFontSize;
+    [Header("Text Values")]
+    [SerializeField][Range(1, 2)] float textMaxScale = 1.1f;
+    [SerializeField] float textAnimTime = 0.5f;
+    [SerializeField] float textTimeBetween = 0.3f;
 
-    [SerializeField] GameObject uiBackground;
-    [SerializeField] float bgAppearTime, bgAppearDelay, bgAplha;
+    [Header("Background Values")]
+    [SerializeField][Range (0, 1)] float bgAlpha = 0.25f;
+    [SerializeField] float bgAnimTime;
+
+    [Header ("Texts")]
+    [SerializeField] GameObject uiTextPrefab;
+    [SerializeField] string[] texts;
+
+    readonly List<TextMeshProUGUI> uiTexts = new();
+    Image bgImage;
 
     [SerializeField] AudioClip winSound;
-    [SerializeField] GameObject blackTransition;
-    [SerializeField] float transitionTime;
+    PauseMenuController pauseMenu;
 
-    public void TriggerEndManager()
+    private void Awake()
     {
-        StartCoroutine(StopMusic(stopMusicDuration));
-        foreach (GameObject uiText in uiTexts) StartCoroutine(PopUpText(uiText));
-        StartCoroutine(AppearBackground());
+        bgImage = GetComponent<Image>();
     }
 
-    private IEnumerator PopUpText(GameObject text)
+    private void Start()
     {
-        TextMeshProUGUI tmPro = text.GetComponent<TextMeshProUGUI>();
+        pauseMenu = GameObject.FindWithTag("Pause Menu").GetComponent<PauseMenuController>();
+    }
 
-        float startFontSize = tmPro.fontSize * textStartFontSize,
-            targetFontSize = tmPro.fontSize;
+    public void Trigger()
+    {
+        GameManager.Ins.currentLevel = 1;
+        pauseMenu.gameCanBePaused = false;
 
-        Color startColor = new Color(255, 255, 255, 0), 
-            targetColor = Color.white;
+        InitializeTexts();
+        StartCoroutine(Sequence());
+    }
 
-        float step = 0;
+    IEnumerator Sequence()
+    {
+        yield return new WaitForSeconds(initialWaitTime);
 
-        yield return new WaitForSeconds(textPopUpDelay);
+        SFXPlayer.Ins.PlaySound(winSound);
+        bgImage.DOFade(bgAlpha, bgAnimTime);
 
-        while (step < textPopUpTime)
+        MusicPlayer.Ins.audioSource.DOFade(0, fadeOutMusicTime);
+
+        foreach (TextMeshProUGUI textTMPro in uiTexts)
         {
-            tmPro.fontSize = Mathf.Lerp(startFontSize, targetFontSize, 
-                textPopUpCurve.Evaluate(step/textPopUpTime));
+            textTMPro.DOFade(1, textAnimTime).SetEase(Ease.InSine);
+            textTMPro.transform.DOScale(textMaxScale, textAnimTime).SetEase(Ease.OutBack);
 
-            tmPro.color = Color.Lerp(startColor, targetColor,
-                textPopUpCurve.Evaluate(step / textPopUpTime));
-
-            step += Time.deltaTime;
-            yield return null;
+            yield return new WaitForSeconds(textTimeBetween);
         }
-        tmPro.fontSize = targetFontSize;
-        tmPro.color = targetColor;
 
+        yield return new WaitForSeconds(sceneWaitTime);
+
+        TransitionManager.Ins.LoadScene(TMScene.MainMenu, TMTransition.LensCircle);
     }
 
-    private IEnumerator AppearBackground()
+    void InitializeTexts()
     {
-        Image bgImage = 
-            uiBackground.GetComponent<Image>();
-
-        Color startColor = new Color(0, 0, 0, 0),
-            targetColor = new Color(0, 0, 0, bgAplha);
-
-        float step = 0;
-
-        yield return new WaitForSeconds(bgAppearDelay);
-        SFXPlayer.Ins.PlaySound(winSound, 0);
-
-        while (step < bgAppearTime)
+        foreach (string text in texts)
         {
-            bgImage.color = Color.Lerp(startColor, targetColor,
-                textPopUpCurve.Evaluate(step / bgAppearTime));
+            GameObject textObject = Instantiate(uiTextPrefab, transform);
+            TextMeshProUGUI textTMPro = textObject.GetComponent<TextMeshProUGUI>();
 
-            step += Time.deltaTime;
-            yield return null;
+            textTMPro.DOFade(0, 0);
+            textTMPro.text = text;
+
+            uiTexts.Add(textTMPro);
         }
-        bgImage.color = targetColor;
     }
-
-    private IEnumerator StopMusic(float time)
-    {
-        AudioSource musicSource =
-            MusicPlayer.Ins.audioSource;
-
-        float start = musicSource.volume, target = 0, step = 0;
-        yield return new WaitForSeconds(stopMusicDelay);
-
-        while (step < time)
-        {
-            musicSource.volume = Mathf.Lerp(start, target,
-                stopMusicCurve.Evaluate(step / time));
-
-            step += Time.deltaTime;
-            yield return null;
-        }
-        musicSource.volume = 0;
-        musicSource.Stop();
-    }
-
-    public IEnumerator LoadMainMenu()
-    {
-        Image bgImage =
-            blackTransition.GetComponent<Image>();
-
-        Color startColor = new Color(0, 0, 0, 0),
-            targetColor = new Color(0, 0, 0, 1);
-        float step = 0;
-
-        while (step < transitionTime)
-        {
-            bgImage.color = Color.Lerp(startColor, targetColor,
-                transitionCurve.Evaluate(step / transitionTime));
-            step += Time.deltaTime;
-            yield return null;
-        }
-        bgImage.color = targetColor;
-
-        AudioSource musicSource =
-            MusicPlayer.Ins.audioSource;
-        musicSource.volume = .5f;
-        musicSource.Play();
-
-        SceneManager.LoadScene(0);
-    }
-    //A short game with a very dizzy cat, select your character and start rotating.
 }
+

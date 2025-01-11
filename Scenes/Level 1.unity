@@ -11679,7 +11679,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  rotating: 0
+  isRotating: 0
 --- !u!1001 &1325699971
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11920,10 +11920,6 @@ PrefabInstance:
     - target: {fileID: 4552779494213089243, guid: be58aeb78f970084ba42961786ea7981, type: 3}
       propertyPath: m_Name
       value: Goal Objects
-      objectReference: {fileID: 0}
-    - target: {fileID: 4552779494213089243, guid: be58aeb78f970084ba42961786ea7981, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be58aeb78f970084ba42961786ea7981, type: 3}

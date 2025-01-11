@@ -1,17 +1,15 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GoalController : MonoBehaviour
 {
-    [SerializeField] private bool isFinal;
+    [SerializeField] bool isFinal;
+    [SerializeField] float sceneLoadDelay;
+    [SerializeField] GameObject selfParticles;
 
-    [SerializeField] private float sceneLoadDelay;
-    [SerializeField] private GameObject selfParticles;
-
-    private PlayerController playerController;
-
-    private SpriteRenderer spriteRenderer;
+    PlayerController playerController;
+    SpriteRenderer spriteRenderer;
+    EndManager endManager;
 
     private void Start()
     {
@@ -19,45 +17,34 @@ public class GoalController : MonoBehaviour
 
         playerController = GameObject.FindGameObjectWithTag("Player")
             .GetComponent<PlayerController>();
+
+        endManager = GameObject.FindWithTag("End Manager")
+            .GetComponent<EndManager>();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    public void Trigger()
     {
-        if (collision.CompareTag("Player")) Trigger();
-    }
-
-    private void Trigger()
-    {
-        playerController.PickFish();
+        playerController.HandlePickFish();
         GetComponent<BoxCollider2D>().enabled = false;
         spriteRenderer.enabled = false;
         selfParticles.SetActive(false);
 
-        if (isFinal)
+        if (isFinal )
         {
-            StartCoroutine(LoadNextSceneFromLastLevel());
+            endManager.Trigger();
+            return;
         }
-        else
-        {
-            StartCoroutine(LoadNextScene());
-        }
+       StartCoroutine(LoadNextScene());
     }
 
-    private IEnumerator LoadNextScene()
+    IEnumerator LoadNextScene()
     {
         yield return new WaitForSeconds(sceneLoadDelay);
         TransitionManager.Ins.LoadScene(TMScene.NextLevel);
     }
 
-    private IEnumerator LoadNextSceneFromLastLevel()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        EndManager endManager = GameObject.FindWithTag("End Manager")
-            .GetComponent<EndManager>();
-        endManager.TriggerEndManager();
-
-        yield return new WaitForSeconds(endManager.nextSceneTime);
-
-        GameManager.Ins.currentLevel = 1;
-        StartCoroutine(endManager.LoadMainMenu());
+        if (collision.CompareTag("Player")) Trigger();
     }
 }

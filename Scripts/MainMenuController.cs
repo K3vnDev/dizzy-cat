@@ -23,7 +23,7 @@ public class MainMenuController : MonoBehaviour
     public void SkinsButton()
     {
         backgroundController.SetIsOnGrayBackground(true);
-        SFXPlayer.Ins.PlayButtonSound(SFXPlayer.ButtonSound.Enter, .1f);
+        SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Enter, .1f);
         ResetButtonsScale();
 
         SwapMenuManager.Ins.ToSkins();
@@ -32,13 +32,13 @@ public class MainMenuController : MonoBehaviour
     public void SettingsButton()
     {
         backgroundController.SetIsOnGrayBackground(true);
-        SFXPlayer.Ins.PlayButtonSound(SFXPlayer.ButtonSound.Enter, .1f);
+        SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Enter, .1f);
         SwapMenuManager.Ins.ToSettings();
     }
 
     public void ExitButtom()
     {
-        SFXPlayer.Ins.PlayButtonSound(SFXPlayer.ButtonSound.Exit, .1f);
+        SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
         Application.Quit();
     }
 

@@ -8,7 +8,7 @@ public class ScenarioController : MonoBehaviour
     [SerializeField] private AnimationCurve easeCurve;
     private float rotationTime = .8f;
     private float zRotation = 0;
-    public bool rotating = false;
+    public bool isRotating = false;
 
     private void Start()
     {
@@ -19,7 +19,7 @@ public class ScenarioController : MonoBehaviour
     {
         int direction = (int) Mathf.Sign(rawDirection);
 
-        rotating = true;
+        isRotating = true;
         zRotation -= 90 * direction;
 
         Quaternion targetRot = Quaternion.Euler(0, 0, zRotation );
@@ -41,7 +41,7 @@ public class ScenarioController : MonoBehaviour
         }
         transform.rotation = target;
 
-        rotating = false;
+        isRotating = false;
         player.transform.SetParent(null);
     }
 }

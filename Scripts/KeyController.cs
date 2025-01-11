@@ -1,15 +1,18 @@
 using System.Collections;
 using UnityEngine;
+using DG.Tweening;
+using System;
 
 public class KeyController : MonoBehaviour
 {
-    [SerializeField] float moveTime;
-    [SerializeField] AnimationCurve easeInOut;
+    [SerializeField] float targetSpeed, minRotationTime;
+    [SerializeField][Range (0, 1)] float rotationTimeFactor;
 
     ParticleSystem keyParticles;
-
     Animator lockAnimator, animator;
+
     PlayerController playerController;
+    LevitateController levitateController;
 
     [Header("SFX")]
     [SerializeField] AudioClip getKeySound;
@@ -17,14 +20,14 @@ public class KeyController : MonoBehaviour
 
     bool alreadyTriggered = false;
 
-
     void Start()
     {
         lockAnimator = GameObject.FindWithTag("Lock").GetComponent<Animator>();
-        keyParticles = GameObject.FindWithTag("Key Particles").GetComponent<ParticleSystem>();
-        playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
-
         animator = GetComponent<Animator>();
+
+        keyParticles = transform.parent.GetComponentInChildren<ParticleSystem>();
+        playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+        levitateController = GetComponent<LevitateController>();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -36,40 +39,40 @@ public class KeyController : MonoBehaviour
         else if (other.CompareTag("Lock"))
         {
             animator.SetTrigger("enter");
+            lockAnimator.SetTrigger("unlock");
+            SFXPlayer.Ins.PlaySound(openLockSound, .15f);
         }
     }
 
     void Trigger()
     {
-        // Stop levitanting effect
-        GetComponent<LevitateController>().StopAllCoroutines();
+        levitateController.Stop();
         playerController.playerCanMove = false;
+
         animator.SetTrigger("pick");
-
-        StartCoroutine(MoveToLock());
-
         keyParticles.Stop();
         SFXPlayer.Ins.PlaySound(getKeySound, .15f);
         alreadyTriggered = true;
+
+        HandleMoveToLock();
     }
 
-    private IEnumerator MoveToLock()
+    void HandleMoveToLock()
     {
-        Vector2 start = transform.position, target = lockAnimator.transform.position;
-        float elapsed = 0;
+        Vector2 lockPosition = lockAnimator.transform.position;
+        float distance = Vector2.Distance(lockPosition, transform.position);
+        float moveTime = distance / targetSpeed;
+        float rotationTime = moveTime * rotationTimeFactor;
 
-        while (elapsed < moveTime)
-        {
-            transform.position = Vector2.Lerp(start, target, easeInOut.Evaluate(elapsed / moveTime));
+        transform
+            .DOMove(lockPosition, moveTime)
+            .SetEase(Ease.InOutSine)
+            .OnComplete(() => playerController.playerCanMove = true);
 
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        transform.position = target;
+        if (rotationTime < minRotationTime) return;
 
-        SFXPlayer.Ins.PlaySound(openLockSound, .15f);
-
-        lockAnimator.SetTrigger("unlock");
-        playerController.playerCanMove = true;
+        transform.parent
+            .DORotate(Vector3.forward * 360, rotationTime, RotateMode.FastBeyond360)
+            .SetEase(Ease.OutSine);
     }
 }

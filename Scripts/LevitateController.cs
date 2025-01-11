@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using DG.Tweening;
 
 public class LevitateController : MonoBehaviour
 {
@@ -7,34 +8,16 @@ public class LevitateController : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(FloatingAnimation());    
-    }
-    
-    private IEnumerator FloatingAnimation()
-    {
-        float positionY = transform.localPosition.y;
+        transform.DOLocalMoveY(range / 2, 0);
 
-        while (true)
-        {
-            yield return Levitate(positionY - range / 2);
-            yield return Levitate(positionY + range / 2);
-        }
+        transform
+            .DOLocalMoveY(-range, period / 4)
+            .SetEase(Ease.InOutQuad)
+            .SetLoops(-1, LoopType.Yoyo);
     }
 
-    IEnumerator Levitate(float targetY)
+    public void Stop()
     {
-        Vector2 start = transform.localPosition, 
-            target = new(transform.localPosition.x, targetY);
-
-        float elapsed = 0, time = period / 4;
-
-        while (elapsed < time)
-        {
-            transform.localPosition = Vector2.Lerp(start, target, elapsed / time);
-
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        transform.localPosition = target;
+        transform.DOKill();
     }
 }

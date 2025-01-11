@@ -21,14 +21,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] AudioClip catMeowSound;
 
     [Space]
-    [SerializeField] GameObject cantRotateSign;
 
     [HideInInspector] public Rigidbody2D rb;
     float initialGravity;
 
-    [HideInInspector] public Collider2D circleCollider;
+    [Header ("Colliders")]
+    [SerializeField] Collider2D defaultCollider;
+    [SerializeField] Collider2D fallingCollider;
+    float fallingColliderOffset;
+
     ScenarioController scenarioController;
     PlayerEventsManager playerEvents;
+    CantRotateAnimation cantRotateAnimation;
 
     float horizontalAxis;
     bool fishCollected = false;
@@ -38,24 +42,26 @@ public class PlayerController : MonoBehaviour
     readonly float FISH_PARTICLES_OFFSET = 0.25f;
     readonly float INPUT_BUFFER_TIME = 0.13f;
 
-
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         scenarioController = GameObject.FindGameObjectWithTag("Scenario").GetComponent<ScenarioController>();
         playerEvents = GetComponent<PlayerEventsManager>();
+        defaultCollider = GetComponent<CircleCollider2D>();
+        cantRotateAnimation = GameObject.FindWithTag("CantRotateSign").GetComponent<CantRotateAnimation>();
 
         initialGravity = rb.gravityScale;
         inputBuffer = new();
 
         playerEvents.OnHitGround += HandleCatSound;
+        fallingColliderOffset = -fallingCollider.offset.y;
     }
 
     void Update()
     {
         GroundCheckingLogic();
 
-        if (!PauseMenuController.Ins.gameIsPaused)
+        if (!PauseMenuController.Ins.GameIsPaused)
         {
             horizontalAxis = InputManager.Ins.Game.RotateDirection;
 
@@ -72,31 +78,31 @@ public class PlayerController : MonoBehaviour
             HandleRotate();
         }
 
-        if (scenarioController.rotating)
+        if (scenarioController.isRotating)
         {
             rb.velocity = Vector2.zero;
             rb.gravityScale = 0;
         }
         else rb.gravityScale = initialGravity;
 
-        isFalling = !scenarioController.rotating && !isGrounded;
+        isFalling = !scenarioController.isRotating && !isGrounded;
+
+        CircleCollidersLogic();
     }
 
     void HandleRotate()
     {
         float horizontalAxis = PeekInputBuffer();
 
-        if (!scenarioController.rotating && playerCanMove && horizontalAxis != 0)
+        if (!scenarioController.isRotating && playerCanMove && horizontalAxis != 0)
         {
             scenarioController.SetRotation(horizontalAxis);
             PlaySound(rotateSound, .2f);
             inputBuffer.Clear();
         }
-        else if (!playerCanMove && this.horizontalAxis != 0
-            && GameObject.FindWithTag("Cant Rotate") == null && !fishCollected)
+        else if (!playerCanMove && this.horizontalAxis != 0 && !fishCollected)
         {
-            Instantiate(cantRotateSign);
-            PlaySound(errorSound, .1f);
+            cantRotateAnimation.Trigger();
         }
     }
 
@@ -106,10 +112,9 @@ public class PlayerController : MonoBehaviour
         isGrounded = Physics2D.OverlapBox(boxPosition, boxSize, 6, groundLayer);
     }
 
-    public void PickFish()
+    public void HandlePickFish()
     {
         Vector2 particlesPos = new (transform.position.x, transform.position.y - FISH_PARTICLES_OFFSET);
-
         Instantiate(playerParticles, particlesPos, Quaternion.Euler(Vector3.zero));
 
         PlaySound(getFishSound, 0.1f);
@@ -143,6 +148,24 @@ public class PlayerController : MonoBehaviour
             return;
         }
         ignoreCatSoundsLeft--;
+    }
+
+    void CircleCollidersLogic()
+    {
+        defaultCollider.enabled = !isFalling;
+        fallingCollider.enabled = isFalling;
+
+        if (isFalling)
+        {
+            float degAngle = scenarioController.transform.localRotation.eulerAngles.z;
+            degAngle = Mathf.Repeat(degAngle, 360f);
+
+            float radAngle = degAngle * Mathf.Deg2Rad;
+            var (x, y) = (Mathf.Round(Mathf.Cos(radAngle)), Mathf.Round(Mathf.Sin(radAngle)));
+
+            Vector2 direction = new(-y, -x);
+            fallingCollider.offset = direction * fallingColliderOffset;
+        }
     }
 
     void OnDisable()

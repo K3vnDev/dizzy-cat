@@ -1,11 +1,11 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
 public class PauseMenuController : MonoBehaviour
 {
-    public bool gameIsPaused = false;
+    public bool GameIsPaused { get; private set; } = false;
+    public bool gameCanBePaused = true;
     CanvasGroup canvasGroup;
 
     public static PauseMenuController Ins;
@@ -27,24 +27,26 @@ public class PauseMenuController : MonoBehaviour
 
     public void TogglePause()
     {
-        gameIsPaused = !gameIsPaused;
+        if (!gameCanBePaused) return;
 
-        canvasGroup.interactable = gameIsPaused;
-        canvasGroup.alpha = gameIsPaused ? 1 : 0;
+        GameIsPaused = !GameIsPaused;
 
-        Time.timeScale = gameIsPaused ? 0 : 1;
-        Cursor.visible = gameIsPaused;
+        canvasGroup.interactable = GameIsPaused;
+        canvasGroup.alpha = GameIsPaused ? 1 : 0;
 
-        MusicPlayer.Ins.LowerVolume(gameIsPaused);
+        Time.timeScale = GameIsPaused ? 0 : 1;
+        Cursor.visible = GameIsPaused;
 
-        if (!gameIsPaused)
+        MusicPlayer.Ins.LowerVolume(GameIsPaused);
+
+        if (!GameIsPaused)
         {
-            SFXPlayer.Ins.PlayButtonSound(SFXPlayer.ButtonSound.Enter, .1f);
+            SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Enter, .1f);
         }
     }
     public void MainMenuButton()
     {
-        SFXPlayer.Ins.PlayButtonSound(SFXPlayer.ButtonSound.Exit, .1f);
+        SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
 
         MusicPlayer.Ins.LowerVolume(false);
         Time.timeScale = 1f;

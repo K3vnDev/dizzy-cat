@@ -11,6 +11,7 @@ public class TransitionManager : MonoBehaviour
 {
     public static TransitionManager Ins;
     public TMTransition CurrentTransition { get; private set; } = TMTransition.None;
+    public bool IsTransitioning { get; private set; } = false;
 
     Camera mainCamera;
     LensCircleController lensCircle;
@@ -59,6 +60,7 @@ public class TransitionManager : MonoBehaviour
             return;
         }
         CurrentTransition = transition;
+        IsTransitioning = true;
 
         if (CurrentTransition == TMTransition.LensCircle)
         {
@@ -90,10 +92,16 @@ public class TransitionManager : MonoBehaviour
         // Fade in song and end transition animation
         mainCamera.cullingMask = -1;
         float transitionOutDuration = transitionerOut();
+
+        MusicPlayer.Ins.Restart();
         source.volume = 0.5f;
 
         yield return new WaitForSeconds(transitionOutDuration);
+
         CurrentTransition = TMTransition.None;
+        IsTransitioning = false;
+
+        RefreshValues();
     }
 
     private void OnEnable()
@@ -109,6 +117,11 @@ public class TransitionManager : MonoBehaviour
     {
         mainCamera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
         lensCircle = GameObject.FindWithTag("LensCircle").GetComponent<LensCircleController>();
+
+        PauseMenuController pauseMenu = GameObject
+            .FindWithTag("Pause Menu")?.GetComponent<PauseMenuController>();
+
+        if ( pauseMenu != null ) pauseMenu.gameCanBePaused = !IsTransitioning;
     }
 
     private void OnLoadNewScene(Scene scene, LoadSceneMode sceneMode)

@@ -20,7 +20,10 @@ public class SFXPlayer : MonoBehaviour
             return;
         }
         Ins = this;
+    }
 
+    private void Start()
+    {
         SetVolume(currentVolume);
     }
 
@@ -35,20 +38,25 @@ public class SFXPlayer : MonoBehaviour
         audioMixerGroup.audioMixer.SetFloat("Volume", newAudioMixerVolume);
     }
 
-    public void PlaySound(AudioClip sound, float pitchRange)
+    public void PlaySound(AudioClip sound, float pitchRange = 0)
     {
         AudioSource audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.outputAudioMixerGroup = audioMixerGroup;
 
-        float randomPitch = Random.Range(-pitchRange, pitchRange) + 1;
-        audioSource.pitch = randomPitch;
+        float randomPitch = 1;
+
+        if (pitchRange != 0)
+        {
+            randomPitch = Random.Range(-pitchRange, pitchRange) + 1;
+            audioSource.pitch = randomPitch;
+        }
 
         audioSource.PlayOneShot(sound);
         
         Destroy(audioSource, sound.length / randomPitch);
     }
 
-    public void PlayButtonSound(ButtonSound sound, float pitchRange)
+    public void PlaySound(ButtonSound sound, float pitchRange = 0)
     {
         AudioClip selectedSound = buttonSounds[(int) sound];
         PlaySound(selectedSound, pitchRange);

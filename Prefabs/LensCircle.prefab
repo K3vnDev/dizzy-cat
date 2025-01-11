@@ -104,5 +104,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 578e664c9aa53f0418c62ae7aa1c310a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  transitionInTime: 0.5
-  transitionOutTime: 0.25
+  transitionInTime: 0.6
+  transitionOutTime: 0.3

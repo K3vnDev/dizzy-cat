@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -22,7 +23,16 @@ public class MusicPlayer : MonoBehaviour
         Ins = this;
 
         audioSource = GetComponent<AudioSource>();
+    }
+
+    private void Start()
+    {
         SetVolume(currentVolume);
+    }
+
+    public void Restart()
+    {
+        audioSource.Play();
     }
 
     public void LowerVolume(bool value)

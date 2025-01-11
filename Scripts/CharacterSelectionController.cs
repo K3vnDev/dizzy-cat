@@ -16,7 +16,7 @@ public class CharacterSelectionController : MonoBehaviour
 
     public void SwapCharacter(int characterIndex)
     {
-        SFXPlayer.Ins.PlayButtonSound(SFXPlayer.ButtonSound.Select, .1f);
+        SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Select, .1f);
 
         GameManager.Ins.selectedCharacter = characterIndex;
         UpdateSelectorPosition();
@@ -27,7 +27,7 @@ public class CharacterSelectionController : MonoBehaviour
         backgroundController.SetIsOnGrayBackground(false);
         okayButton.transform.localScale = Vector2.one;
 
-        SFXPlayer.Ins.PlayButtonSound(SFXPlayer.ButtonSound.Exit, .1f);
+        SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
 
         SwapMenuManager.Ins.ToMain();
     }

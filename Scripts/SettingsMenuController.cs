@@ -26,7 +26,7 @@ public class SettingsMenuController : MonoBehaviour
     public void OkayButton()
     {
         backgroundController.SetIsOnGrayBackground(false);
-        SFXPlayer.Ins.PlayButtonSound(SFXPlayer.ButtonSound.Exit, .1f);
+        SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
         SwapMenuManager.Ins.ToMain();
     }
 
