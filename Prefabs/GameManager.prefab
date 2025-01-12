@@ -259,8 +259,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1f710707be2ae546a81ac1c9037faac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firstSelected: {fileID: 0}
+  CurrentSelected: {fileID: 0}
   originalMaterial: {fileID: 2100000, guid: ef30ae8dd4472714e8ecfbbe5f7c5fb9, type: 2}
+  normalDelayRate: {x: 0.5, y: 0.25}
+  fastDelayRate: {x: 0.3, y: 0.01}
+  maxTime: 10
+  fadeInTime: 0.3
+  fadeOutTime: 0.9
 --- !u!1 &5250573446957814356
 GameObject:
   m_ObjectHideFlags: 0

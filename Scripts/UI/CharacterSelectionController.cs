@@ -19,9 +19,9 @@ public class CharacterSelectionController : MonoBehaviour
     private void OnEnable()
     {
         GameObject button = characterButtons[GameManager.Ins.selectedCharacter]
-            .GetComponentInChildren<ButtonsController>().gameObject;
+            .GetComponentInChildren<NavigationTarget>().gameObject;
 
-        NavigationSystem.Ins.SetSelected(button);
+        NavigationSystem.Ins.Select(button);
     }
 
     public void SwapCharacter(int characterIndex)
@@ -42,7 +42,7 @@ public class CharacterSelectionController : MonoBehaviour
         SwapMenuManager.Ins.ToMain();
 
         NavigationSystem.Ins.ClearSelected();
-        NavigationSystem.Ins.SetSelected(skinsButton, false);
+        NavigationSystem.Ins.Select(skinsButton);
     }
 
     private void UpdateSelectorPosition()

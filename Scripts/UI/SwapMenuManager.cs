@@ -9,6 +9,8 @@ public class SwapMenuManager : MonoBehaviour
 
     public GameObject[] orderedMenus = new GameObject[3];
 
+    public NavigationTarget[] orderedExitButtons = new NavigationTarget[2];
+
     public static SwapMenuManager Ins;
     BackgroundController backgroundController;
 
@@ -36,15 +38,16 @@ public class SwapMenuManager : MonoBehaviour
         }
     }
 
-    public void ToMain() { currentMenu = Menu.Main; }
-    public void ToSkins() { currentMenu = Menu.Skins; }
-    public void ToSettings() { currentMenu = Menu.Settings; }
+    public void ToMain() =>  currentMenu = Menu.Main;
+    public void ToSkins() => currentMenu = Menu.Skins;
+    public void ToSettings() => currentMenu = Menu.Settings;
 
 
     void Update()
     {
         HandleCurrentMenu();
     }
+
     private void OnEnable()
     {
         if (InputManager.Ins == null) return;
@@ -61,16 +64,9 @@ public class SwapMenuManager : MonoBehaviour
     {
         if (currentMenu == Menu.Main) return;
 
-        backgroundController.SetIsOnGrayBackground(false);
         SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
+        backgroundController.SetIsOnGrayBackground(false);
 
-        if (NavigationSystem.Ins.IsNavigating)
-        {
-            NavigationSystem.Ins.ClearSelected();
-
-            GameObject newSelected = currentMenu == Menu.Skins ? skinsButton : settingsButton;
-            NavigationSystem.Ins.SetSelected(newSelected);
-        }
-        ToMain();
+        orderedExitButtons[(int) currentMenu - 1].Trigger();
     }
 }

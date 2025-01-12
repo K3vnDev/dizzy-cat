@@ -36,7 +36,7 @@ public class SettingsMenuController : MonoBehaviour
 
     private void OnEnable()
     {
-        NavigationSystem.Ins.SetSelected(eventFirstSelected);
+        NavigationSystem.Ins.Select(eventFirstSelected);
     }
 
     public void OkayButton()
@@ -46,7 +46,7 @@ public class SettingsMenuController : MonoBehaviour
         SwapMenuManager.Ins.ToMain();
 
         NavigationSystem.Ins.ClearSelected();
-        NavigationSystem.Ins.SetSelected(settingsButton, false);
+        NavigationSystem.Ins.Select(settingsButton);
     }
 
     public void ChangeMusicVolume(float vol)

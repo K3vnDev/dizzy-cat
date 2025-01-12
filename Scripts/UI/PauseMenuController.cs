@@ -42,7 +42,7 @@ public class PauseMenuController : MonoBehaviour
 
         if (GameIsPaused)
         {
-            NavigationSystem.Ins.SetSelected(resumeButton);
+            NavigationSystem.Ins.Select(resumeButton);
         }
         else
         {

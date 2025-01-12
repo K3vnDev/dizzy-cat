@@ -4,7 +4,7 @@ using UnityEngine;
 public static class Utils 
 {
     /// <summary> Listens the change of a variable and sets the reference with the new value. </summary>
-    public static void OnVariableChange<T>(T original, ref T reference, Action callback)
+    public static void OnVariableChange<T>(T original, ref T reference, Action callback = null)
     {
         if (reference == null)
         {
@@ -15,7 +15,7 @@ public static class Utils
         if (!original.Equals(reference))
         {
             reference = original;
-            callback();
+            callback?.Invoke();
         }
     }
 

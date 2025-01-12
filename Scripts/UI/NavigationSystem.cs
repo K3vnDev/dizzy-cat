@@ -1,7 +1,11 @@
 using DG.Tweening;
+using System;
+using Unity.VisualScripting;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
 public class NavigationSystem : MonoBehaviour
@@ -9,6 +13,7 @@ public class NavigationSystem : MonoBehaviour
     public static NavigationSystem Ins;
 
     EventSystem eventSystem;
+    InputSystemUIInputModule eventSystemInput;
     public bool IsNavigating { get; private set; } = false;
 
     public GameObject CurrentSelected;
@@ -16,7 +21,15 @@ public class NavigationSystem : MonoBehaviour
 
     [SerializeField] Material originalMaterial;
 
-    readonly float MAX_TIME = 5f, FADE_IN_TIME = 0.3f, FADE_OUT_TIME = 0.9f;
+    [Header("Move Repeat Speed")]
+    [SerializeField] Vector2 normalDelayRate;
+    [SerializeField] Vector2 fastDelayRate;
+
+    [Header ("Time")]
+    [SerializeField] float maxTime = 5f;
+    [SerializeField][Range(0, 2)] float fadeInTime = 0.3f;
+    [SerializeField][Range(0, 2)] float fadeOutTime = 0.9f;
+
     readonly string OPACITY_NAME = "_Opacity", FADE_OUT_ID = "unset-mat";
     float timeLeft;
 
@@ -30,17 +43,18 @@ public class NavigationSystem : MonoBehaviour
         Ins = this;
 
         eventSystem = GetComponent<EventSystem>();
+        eventSystemInput = GetComponent<InputSystemUIInputModule>();
     }
 
-    public void SetSelected(GameObject obj, bool initial = true)
+    public void Select(GameObject obj, bool alsoSetPrevious = false)
     {
         eventSystem.SetSelectedGameObject(obj);
     }
 
     public void ClearSelected()
     {
-        UnSetMaterial(CurrentSelected);
-        SetSelected(null);
+        UnSetMaterialOf(CurrentSelected);
+        Select(null);
     }
 
     public void SetIsNavigating(bool navigating)
@@ -64,7 +78,7 @@ public class NavigationSystem : MonoBehaviour
             else
             {
                 IsNavigating = false;
-                UnSetMaterial(CurrentSelected, true);
+                UnSetMaterialOf(CurrentSelected, true);
             }
         }
     }
@@ -73,79 +87,128 @@ public class NavigationSystem : MonoBehaviour
     {
         if (!IsNavigating && PreviousSelected != null)
         {
-            eventSystem.SetSelectedGameObject(PreviousSelected);
+            Select(PreviousSelected);
             IsNavigating = true;
         }
 
         if (IsNavigating)
         {
-            timeLeft = MAX_TIME;
-            SetMaterial(CurrentSelected);
+            timeLeft = maxTime;
+            SetMaterialOf(CurrentSelected);
         }
 
         if (PreviousSelected != null && !PreviousSelected.Equals(CurrentSelected))
         {
-            UnSetMaterial(PreviousSelected);
+            UnSetMaterialOf(PreviousSelected);
         }
 
+        SetNavigationSpeed();
         PreviousSelected = CurrentSelected;
     }
 
-    void SetMaterial(GameObject obj)
+    void SetMaterialOf(GameObject obj)
     {
-        Image img = obj.GetComponent<Image>();
-        if (img == null) return;
+        Graphic[] graphs = GetNavigationTarget(obj).graphs;
 
-        img.material = Instantiate(originalMaterial);
-        img.material.DOKill();
-
-        img.material
-            .DOFloat(1f, OPACITY_NAME, FADE_IN_TIME)
-            .SetEase(Ease.OutSine)
-            .SetUpdate(true);
-    }
-
-    void UnSetMaterial(GameObject obj, bool withTransition = false)
-    {
-        Image img = obj.GetComponent<Image>();
-        if (img == null || img.material == null) return;
-
-        if (DOTween.IsTweening(FADE_OUT_ID) || !withTransition)
+        foreach (Graphic graph in graphs)
         {
-            DOTween.Kill(FADE_OUT_ID);
-            img.material.DOKill();
-            img.material = null;
-            return;
+            graph.material = Instantiate(originalMaterial);
+            graph.material.DOKill();
+
+            graph.material
+                .DOFloat(1f, OPACITY_NAME, fadeInTime)
+                .SetEase(Ease.OutSine)
+                .SetUpdate(true);
         }
-
-        img.material
-            .DOFloat(0f, OPACITY_NAME, FADE_OUT_TIME)
-            .SetEase(Ease.InSine)
-            .SetId(FADE_OUT_ID)
-            .SetUpdate(true)
-            .OnComplete(() => img.material = null);
     }
 
-    private void OnEnable()
+    void UnSetMaterialOf(GameObject obj, bool withTransition = false)
     {
-        InputManager.Ins.UI.Accept.performed += HandleUIAccept;
+        Graphic[] graphs = GetNavigationTarget(obj).graphs;
+
+        foreach (Graphic graph in graphs)
+        {
+            if (graph.material == null) continue;
+
+            if (DOTween.IsTweening(FADE_OUT_ID) || !withTransition)
+            {
+                DOTween.Kill(FADE_OUT_ID);
+                graph.material.DOKill();
+                graph.material = null;
+                continue;
+            }
+
+            graph.material
+                .DOFloat(0f, OPACITY_NAME, fadeOutTime)
+                .SetEase(Ease.InSine)
+                .SetId(FADE_OUT_ID)
+                .SetUpdate(true)
+                .OnComplete(() =>
+                {
+                    Debug.Log($"Graph material of {graph.name} was unset from timeout");
+                    graph.material = null;
+                });
+        }
     }
 
-    private void OnDisable()
+    void HandleOnUIAccept(InputAction.CallbackContext _)
     {
-        InputManager.Ins.UI.Accept.performed -= HandleUIAccept;
-    }
+        if (CurrentSelected == null) return;
 
-    void HandleUIAccept(InputAction.CallbackContext _)
-    {
         if (!IsNavigating) 
         {
             IsNavigating = true;
             HandleNavigation();
             return;
         }
+        GetNavigationTarget().Trigger();
+    }
 
-        ButtonsController buttonController = CurrentSelected.GetComponent<ButtonsController>();
-        buttonController.OnPointerClick(null);
+    void HandleOnUINavigate(InputAction.CallbackContext _)
+    {
+        if (IsNavigating)
+        {
+            timeLeft = maxTime;
+        }
+    }
+
+    private void OnEnable()
+    {
+        InputManager.Ins.UI.Accept.performed += HandleOnUIAccept;
+        InputManager.Ins.UI.Navigate.performed += HandleOnUINavigate;
+    }
+
+    private void OnDisable()
+    {
+        InputManager.Ins.UI.Accept.performed -= HandleOnUIAccept;
+        InputManager.Ins.UI.Navigate.performed += HandleOnUINavigate;
+    }
+
+    void SetNavigationSpeed()
+    {
+        if (CurrentSelected == null) return;
+
+        if (GetNavigationTarget().type == NavigationTarget.Type.Slider)
+        {
+            eventSystemInput.moveRepeatDelay = fastDelayRate.x;
+            eventSystemInput.moveRepeatRate = fastDelayRate.y;
+        }
+        else
+        {
+            eventSystemInput.moveRepeatDelay = normalDelayRate.x;
+            eventSystemInput.moveRepeatRate = normalDelayRate.y;
+        }
+    }
+
+    NavigationTarget GetNavigationTarget(GameObject obj = null)
+    {
+        if (obj == null) obj = CurrentSelected;
+        NavigationTarget target = obj.GetComponent<NavigationTarget>();
+
+        if (target == null)
+        {
+            throw new Exception($"Coultn't found a NavigationTarget at GameObject {obj.name}");
+        }
+        return target;
     }
 }

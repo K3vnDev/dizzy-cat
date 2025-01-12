@@ -18,7 +18,7 @@ public class MainMenuController : MonoBehaviour
         if (NavigationSystem.Ins.CurrentSelected == null)
         {
             Debug.Log("Default set play button");
-            NavigationSystem.Ins.SetSelected(eventFistSelected);
+            NavigationSystem.Ins.Select(eventFistSelected);
         }
     }
 
