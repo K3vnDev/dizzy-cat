@@ -27,15 +27,11 @@ public class SFXPlayer : MonoBehaviour
         SetVolume(currentVolume);
     }
 
-    /// <summary>
-    /// Sets the sfx audio mixer volume from a 0 to 100 float
-    /// </summary>
     public void SetVolume(float value)
     {
         currentVolume = value;
-
-        float newAudioMixerVolume = (curve.Evaluate(currentVolume / 100) * 80) - 80;
-        audioMixerGroup.audioMixer.SetFloat("Volume", newAudioMixerVolume);
+        float newVolume = Utils.ParseVolume(value, curve);
+        audioMixerGroup.audioMixer.SetFloat("Volume", newVolume);
     }
 
     public void PlaySound(AudioClip sound, float pitchRange = 0)

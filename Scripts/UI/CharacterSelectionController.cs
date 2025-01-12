@@ -1,17 +1,27 @@
+using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class CharacterSelectionController : MonoBehaviour
 {
-    [SerializeField] GameObject mainMenu, okayButton, _selector, characterButtonPrefab;
+    [SerializeField] GameObject mainMenu, okayButton, _selector, characterButtonPrefab, skinsButton;
     [SerializeField] BackgroundController backgroundController;
 
     readonly GameObject[] characterButtons = new GameObject[8];
     GameObject charactersGrid;
 
-    private void Start()
+    private void Awake()
     {
         charactersGrid = GameObject.FindWithTag("CharactersGrid");
         InitCharacterButtons();
+    }
+
+    private void OnEnable()
+    {
+        GameObject button = characterButtons[GameManager.Ins.selectedCharacter]
+            .GetComponentInChildren<ButtonsController>().gameObject;
+
+        NavigationSystem.Ins.SetSelected(button);
     }
 
     public void SwapCharacter(int characterIndex)
@@ -30,12 +40,15 @@ public class CharacterSelectionController : MonoBehaviour
         SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
 
         SwapMenuManager.Ins.ToMain();
+
+        NavigationSystem.Ins.ClearSelected();
+        NavigationSystem.Ins.SetSelected(skinsButton, false);
     }
 
     private void UpdateSelectorPosition()
     {
-        int character = GameManager.Ins.selectedCharacter;
-        _selector.transform.SetParent(characterButtons[character].transform, false);
+        int index = GameManager.Ins.selectedCharacter;
+        _selector.transform.SetParent(characterButtons[index].transform, false);
         _selector.transform.SetAsFirstSibling();
     }
 

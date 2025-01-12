@@ -1,11 +1,10 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public static class Utils 
 {
-    public static void OnVariableChange<T>(T original, ref T reference, Action<T> callback)
+    /// <summary> Listens the change of a variable and sets the reference with the new value. </summary>
+    public static void OnVariableChange<T>(T original, ref T reference, Action callback)
     {
         if (reference == null)
         {
@@ -15,8 +14,18 @@ public static class Utils
 
         if (!original.Equals(reference))
         {
-            callback(original);
             reference = original;
+            callback();
         }
+    }
+
+    /// <summary> Converts from a 0 to 100 value to an AudioMixer-Compatible one. </summary>
+    public static float ParseVolume(float volume, AnimationCurve curve)
+    {
+        if (volume >= 0 && volume <= 100)
+        {
+            return (curve.Evaluate(volume / 100) * 80) - 80;
+        }
+        throw new Exception($"Volume was outside bounds. Value recieved: {volume}");
     }
 }

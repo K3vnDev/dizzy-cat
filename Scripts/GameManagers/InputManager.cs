@@ -1,18 +1,25 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
     public static InputManager Ins;
     Controls controls;
 
-    public GameActions Game = new (0f);
+    public GameActions Game;
     public Controls.UIActions UI;
 
     public class GameActions
     {
-        public float RotateDirection { get; }
+        public float RotateDirection { get; private set; }
+        public InputAction Pause { get; private set; }
 
-        public GameActions(float rotateDirection)
+        public GameActions(Controls.GameActions gameActions)
+        {
+            Pause = gameActions.Pause;
+        }
+
+        public void SetRotateDirection(float rotateDirection)
         {
             if (rotateDirection == 0) RotateDirection = rotateDirection;
             else RotateDirection = Mathf.Sign(rotateDirection);
@@ -30,6 +37,8 @@ public class InputManager : MonoBehaviour
 
         controls = new();
         UI = controls.UI;
+
+        Game = new (controls.Game);
     }
 
     private void OnEnable() => controls?.Enable();
@@ -38,7 +47,7 @@ public class InputManager : MonoBehaviour
     void HandleGameActions()
     {
         float rotateDirection = controls.Game.Rotate.ReadValue<Vector2>().x;
-        Game = new GameActions (rotateDirection);
+        Game.SetRotateDirection(rotateDirection);
     }
 
     void Update()

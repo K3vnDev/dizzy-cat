@@ -4,17 +4,18 @@ using UnityEngine.UI;
 
 public class LensCircleController : MonoBehaviour
 {
-    Image image;
+    Material material;
     [SerializeField][Range (0, 3)] float transitionInTime, transitionOutTime;
+    readonly string RADIUS = "_Radius";
 
     private void Awake()
     {
-        image = GetComponent<Image>();
+        material = GetComponent<Image>().material;
     }
 
     public void SetRadius(float radius)
     {
-        image.material.SetFloat("_Radius", radius);
+        material.SetFloat(RADIUS, radius);
     }
 
     public float TransitionIn()
@@ -30,11 +31,9 @@ public class LensCircleController : MonoBehaviour
 
     void Transitionate(float startRadius, float targetRadius, float time, Ease easing)
     {
-        DOTween.To(
-            () => startRadius,
-            val => SetRadius(val),
-            targetRadius,
-            time
-        ).SetEase(easing);
+        SetRadius(startRadius);
+        material.DOKill();
+
+        material.DOFloat(targetRadius, RADIUS, time).SetEase(easing);
     }
 }

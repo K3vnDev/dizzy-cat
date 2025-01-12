@@ -11,6 +11,8 @@ public class PauseMenuController : MonoBehaviour
     public static PauseMenuController Ins;
     [SerializeField] TextMeshProUGUI currentLevelIndicator;
 
+    [SerializeField] GameObject resumeButton, mainMenuButton;
+
     private void Awake()
     {
         if (Ins == null) Ins = this;
@@ -22,7 +24,6 @@ public class PauseMenuController : MonoBehaviour
         canvasGroup = GetComponent<CanvasGroup>();
         SetCurrentLevelIndicatorText();
 
-        InputManager.Ins.UI.Pause.performed += HandleTogglePause;
     }
 
     public void TogglePause()
@@ -39,9 +40,16 @@ public class PauseMenuController : MonoBehaviour
 
         MusicPlayer.Ins.LowerVolume(GameIsPaused);
 
-        if (!GameIsPaused)
+        if (GameIsPaused)
+        {
+            NavigationSystem.Ins.SetSelected(resumeButton);
+        }
+        else
         {
             SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Enter, .1f);
+
+            NavigationSystem.Ins.ClearSelected();
+            NavigationSystem.Ins.SetIsNavigating(false);
         }
     }
     public void MainMenuButton()
@@ -50,6 +58,8 @@ public class PauseMenuController : MonoBehaviour
 
         MusicPlayer.Ins.LowerVolume(false);
         Time.timeScale = 1f;
+
+        NavigationSystem.Ins.ClearSelected();
 
         TransitionManager.Ins.LoadScene(TMScene.MainMenu, TMTransition.LensCircle);
     }
@@ -62,8 +72,16 @@ public class PauseMenuController : MonoBehaviour
 
     void HandleTogglePause(InputAction.CallbackContext _) => TogglePause();
 
+    private void OnEnable()
+    {
+        InputManager.Ins.Game.Pause.performed += HandleTogglePause;
+        InputManager.Ins.UI.Exit.performed += HandleTogglePause;
+
+    }
+
     private void OnDisable()
     {
-        InputManager.Ins.UI.Pause.performed -= HandleTogglePause;
+        InputManager.Ins.Game.Pause.performed -= HandleTogglePause;
+        InputManager.Ins.UI.Exit.performed -= HandleTogglePause;
     }
 }

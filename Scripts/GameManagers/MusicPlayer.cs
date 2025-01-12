@@ -41,14 +41,10 @@ public class MusicPlayer : MonoBehaviour
         audioSource.volume = newVolume;
     }
 
-    /// <summary>
-    /// Sets the music audio mixer volume from a 0 to 100 float
-    /// </summary>
     public void SetVolume(float value)
     {
         currentVolume = value;
-
-        float newMixerVolume = (curve.Evaluate(currentVolume / 100) * 80) - 80;
-        audioMixer.SetFloat("Volume", newMixerVolume);
+        float newVolume = Utils.ParseVolume(value, curve);
+        audioMixer.SetFloat("Volume", newVolume);
     }
 }

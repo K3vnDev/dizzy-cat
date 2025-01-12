@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerEventsManager : MonoBehaviour
 {
     PlayerController playerController;
-    bool isFallingRef, isGroundedRef;
+    bool isFalling, isGrounded;
 
     public delegate void HitGroundHandler();
     public event HitGroundHandler OnHitGround;
@@ -18,15 +18,15 @@ public class PlayerEventsManager : MonoBehaviour
 
     void Update()
     {
-        Utils.OnVariableChange(playerController.isGrounded, ref isGroundedRef, (newValue) => 
+        Utils.OnVariableChange(playerController.isGrounded, ref isGrounded, () => 
         {
-            if (newValue) OnHitGround?.Invoke(); 
+            if (isGrounded) OnHitGround?.Invoke(); 
         });
 
 
-        Utils.OnVariableChange(playerController.isFalling, ref isFallingRef, (newValue) =>
+        Utils.OnVariableChange(playerController.isFalling, ref isFalling, () =>
         {
-            if (newValue) OnFall?.Invoke();
+            if (isFalling) OnFall?.Invoke();
         });
     }
 }

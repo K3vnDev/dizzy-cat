@@ -1,22 +1,32 @@
-using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class MainMenuController : MonoBehaviour
 {
+    [SerializeField] GameObject eventFistSelected;
+
     [SerializeField] float scaleTime, scaleFactor;
-    [SerializeField] GameObject characterSelection, settingsMenu;
     [SerializeField] BackgroundController backgroundController;
     [SerializeField] GameObject[] mainMenuButtons;
 
-    private void Start()
+    private void Awake()
     {
         Cursor.visible = true;
     }
 
+    private void OnEnable()
+    {
+        if (NavigationSystem.Ins.CurrentSelected == null)
+        {
+            Debug.Log("Default set play button");
+            NavigationSystem.Ins.SetSelected(eventFistSelected);
+        }
+    }
+
     public void PlayButton()
     {
-        //SFXPlayer.Ins.PlayButtonSound(SFXPlayer.ButtonSound.Play, .1f);
+        SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Play, .1f);
+
+        NavigationSystem.Ins.SetIsNavigating(false);
         TransitionManager.Ins.LoadScene(TMScene.CurrentLevel, TMTransition.LensCircle);
     }
 
@@ -27,6 +37,7 @@ public class MainMenuController : MonoBehaviour
         ResetButtonsScale();
 
         SwapMenuManager.Ins.ToSkins();
+        NavigationSystem.Ins.ClearSelected();
     }
 
     public void SettingsButton()
@@ -34,6 +45,8 @@ public class MainMenuController : MonoBehaviour
         backgroundController.SetIsOnGrayBackground(true);
         SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Enter, .1f);
         SwapMenuManager.Ins.ToSettings();
+
+        NavigationSystem.Ins.ClearSelected();
     }
 
     public void ExitButtom()

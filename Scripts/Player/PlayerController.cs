@@ -96,7 +96,7 @@ public class PlayerController : MonoBehaviour
 
         if (!scenarioController.isRotating && playerCanMove && horizontalAxis != 0)
         {
-            scenarioController.SetRotation(horizontalAxis);
+            scenarioController.Rotate(horizontalAxis);
             PlaySound(rotateSound, .2f);
             inputBuffer.Clear();
         }
