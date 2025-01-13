@@ -1,11 +1,10 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.Audio;
 using UnityEngine.UI;
 
 public class SettingsMenuController : MonoBehaviour
 {
-    [SerializeField] GameObject eventFirstSelected, settingsButton;
+    [SerializeField] NavigationTarget firstSelected, settingsButton;
 
     [Header ("SFX")]
     [SerializeField] AudioClip sliderSound;
@@ -22,7 +21,6 @@ public class SettingsMenuController : MonoBehaviour
     [SerializeField] Slider sfx_slider;
     [SerializeField] Toggle fullscreen_toggle;
 
-    BackgroundController backgroundController;
     float nextSliderSound = 0;
 
     private void Start()
@@ -31,22 +29,21 @@ public class SettingsMenuController : MonoBehaviour
         ChangeSFXVolume(SFXPlayer.Ins.currentVolume);
 
         fullscreen_toggle.isOn = GameManager.Ins.fsActive;
-        backgroundController = GameObject.FindWithTag("Background").GetComponent<BackgroundController>();
+
+        NavigationSystem.Ins.Initialize(gameObject, firstSelected);
     }
 
     private void OnEnable()
     {
-        NavigationSystem.Ins.Select(eventFirstSelected);
+        NavigationSystem.Ins.Refresh(gameObject, firstSelected);
     }
 
     public void OkayButton()
     {
-        backgroundController.SetIsOnGrayBackground(false);
         SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
-        SwapMenuManager.Ins.ToMain();
+        NavigationSystem.Ins.Select(settingsButton, true);
 
-        NavigationSystem.Ins.ClearSelected();
-        NavigationSystem.Ins.Select(settingsButton);
+        SwapMenuManager.Ins.ToMain();
     }
 
     public void ChangeMusicVolume(float vol)

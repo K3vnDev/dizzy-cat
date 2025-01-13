@@ -3,61 +3,50 @@ using UnityEngine;
 public class MainMenuController : MonoBehaviour
 {
     [SerializeField] GameObject eventFistSelected;
-
     [SerializeField] float scaleTime, scaleFactor;
-    [SerializeField] BackgroundController backgroundController;
     [SerializeField] GameObject[] mainMenuButtons;
+
+    [Space]
+    [SerializeField] NavigationTarget initialTarget;
 
     private void Awake()
     {
         Cursor.visible = true;
+        NavigationSystem.Ins.Initialize(gameObject, initialTarget);
     }
 
     private void OnEnable()
     {
-        if (NavigationSystem.Ins.CurrentSelected == null)
-        {
-            Debug.Log("Default set play button");
-            NavigationSystem.Ins.Select(eventFistSelected);
-        }
+        NavigationSystem.Ins.Refresh(gameObject);
     }
 
     public void PlayButton()
     {
         SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Play, .1f);
-
-        NavigationSystem.Ins.SetIsNavigating(false);
         TransitionManager.Ins.LoadScene(TMScene.CurrentLevel, TMTransition.LensCircle);
+
+        NavigationSystem.Ins.Unselect();
     }
 
     public void SkinsButton()
     {
-        backgroundController.SetIsOnGrayBackground(true);
         SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Enter, .1f);
-        ResetButtonsScale();
-
         SwapMenuManager.Ins.ToSkins();
-        NavigationSystem.Ins.ClearSelected();
+
+        NavigationSystem.Ins.Unselect();
     }
 
     public void SettingsButton()
     {
-        backgroundController.SetIsOnGrayBackground(true);
         SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Enter, .1f);
         SwapMenuManager.Ins.ToSettings();
 
-        NavigationSystem.Ins.ClearSelected();
+        NavigationSystem.Ins.Unselect();
     }
 
     public void ExitButtom()
     {
         SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
         Application.Quit();
-    }
-
-    private void ResetButtonsScale()
-    {
-        foreach (GameObject button  in mainMenuButtons)
-            button.transform.localScale = Vector2.one;
     }
 }

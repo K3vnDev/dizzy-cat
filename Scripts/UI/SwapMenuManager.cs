@@ -38,10 +38,23 @@ public class SwapMenuManager : MonoBehaviour
         }
     }
 
-    public void ToMain() =>  currentMenu = Menu.Main;
-    public void ToSkins() => currentMenu = Menu.Skins;
-    public void ToSettings() => currentMenu = Menu.Settings;
+    public void ToMain ()
+    {
+        currentMenu = Menu.Main;
+        backgroundController.SetIsOnGrayBackground(false);
+    }
 
+    public void ToSkins()
+    {
+        currentMenu = Menu.Skins;
+        backgroundController.SetIsOnGrayBackground(true);
+    }
+
+    public void ToSettings()
+    {
+        currentMenu = Menu.Settings;
+        backgroundController.SetIsOnGrayBackground(true);
+    }
 
     void Update()
     {

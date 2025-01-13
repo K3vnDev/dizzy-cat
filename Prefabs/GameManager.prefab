@@ -177,9 +177,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4668087818846249797}
+  - component: {fileID: 401790076}
   - component: {fileID: 5719361216656696191}
   - component: {fileID: 6860478373147992723}
-  - component: {fileID: 5896263275978178923}
   m_Layer: 0
   m_Name: NavigationSystem
   m_TagString: NavigationSystem
@@ -202,6 +202,23 @@ Transform:
   m_Father: {fileID: 8229674049915329250}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &401790076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2653379406792679852}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0726f428b1b18fa4882f174d67bd5245, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsNavigating: 0
+  originalMaterial: {fileID: 2100000, guid: ef30ae8dd4472714e8ecfbbe5f7c5fb9, type: 2}
+  fadeInTime: 0.2
+  fadeOutTime: 0.9
+  deafultMoveRepeatRate: 0.25
 --- !u!114 &5719361216656696191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -235,7 +252,7 @@ MonoBehaviour:
   m_XRTrackingOrigin: {fileID: 0}
   m_ActionsAsset: {fileID: -944628639613478452, guid: 27a11793e33e456488acecc6b4625148, type: 3}
   m_PointAction: {fileID: -5304026385289436523, guid: 27a11793e33e456488acecc6b4625148, type: 3}
-  m_MoveAction: {fileID: 6570439634892891169, guid: 27a11793e33e456488acecc6b4625148, type: 3}
+  m_MoveAction: {fileID: 0}
   m_SubmitAction: {fileID: 0}
   m_CancelAction: {fileID: 0}
   m_LeftClickAction: {fileID: 173062733945573847, guid: 27a11793e33e456488acecc6b4625148, type: 3}
@@ -247,25 +264,6 @@ MonoBehaviour:
   m_DeselectOnBackgroundClick: 0
   m_PointerBehavior: 0
   m_CursorLockBehavior: 0
---- !u!114 &5896263275978178923
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2653379406792679852}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c1f710707be2ae546a81ac1c9037faac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CurrentSelected: {fileID: 0}
-  originalMaterial: {fileID: 2100000, guid: ef30ae8dd4472714e8ecfbbe5f7c5fb9, type: 2}
-  normalDelayRate: {x: 0.5, y: 0.25}
-  fastDelayRate: {x: 0.3, y: 0.01}
-  maxTime: 10
-  fadeInTime: 0.3
-  fadeOutTime: 0.9
 --- !u!1 &5250573446957814356
 GameObject:
   m_ObjectHideFlags: 0

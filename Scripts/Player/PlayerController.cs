@@ -33,6 +33,7 @@ public class PlayerController : MonoBehaviour
     ScenarioController scenarioController;
     PlayerEventsManager playerEvents;
     CantRotateAnimation cantRotateAnimation;
+    PauseMenuController pauseMenuController;
 
     float horizontalAxis;
     bool fishCollected = false;
@@ -42,16 +43,21 @@ public class PlayerController : MonoBehaviour
     readonly float FISH_PARTICLES_OFFSET = 0.25f;
     readonly float INPUT_BUFFER_TIME = 0.13f;
 
-    void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        scenarioController = GameObject.FindGameObjectWithTag("Scenario").GetComponent<ScenarioController>();
         playerEvents = GetComponent<PlayerEventsManager>();
         defaultCollider = GetComponent<CircleCollider2D>();
-        cantRotateAnimation = GameObject.FindWithTag("CantRotateSign").GetComponent<CantRotateAnimation>();
 
         initialGravity = rb.gravityScale;
         inputBuffer = new();
+    }
+
+    void Start()
+    {
+        scenarioController = GameObject.FindWithTag("Scenario").GetComponent<ScenarioController>();
+        cantRotateAnimation = GameObject.FindWithTag("CantRotateSign").GetComponent<CantRotateAnimation>();
+        pauseMenuController = GameObject.FindWithTag("Pause Menu").GetComponent<PauseMenuController>();
 
         playerEvents.OnHitGround += HandleCatSound;
         fallingColliderOffset = -fallingCollider.offset.y;
@@ -61,7 +67,7 @@ public class PlayerController : MonoBehaviour
     {
         GroundCheckingLogic();
 
-        if (!PauseMenuController.Ins.GameIsPaused)
+        if (!pauseMenuController.GameIsPaused)
         {
             horizontalAxis = InputManager.Ins.Game.RotateDirection;
 

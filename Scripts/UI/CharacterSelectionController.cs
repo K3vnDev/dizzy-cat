@@ -1,11 +1,13 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class CharacterSelectionController : MonoBehaviour
 {
-    [SerializeField] GameObject mainMenu, okayButton, _selector, characterButtonPrefab, skinsButton;
-    [SerializeField] BackgroundController backgroundController;
+    [SerializeField] GameObject mainMenu, okayButton, _selector, characterButtonPrefab;
+    [SerializeField] NavigationTarget skinsButton;
 
     readonly GameObject[] characterButtons = new GameObject[8];
     GameObject charactersGrid;
@@ -14,14 +16,19 @@ public class CharacterSelectionController : MonoBehaviour
     {
         charactersGrid = GameObject.FindWithTag("CharactersGrid");
         InitCharacterButtons();
+
+        NavigationSystem.Ins.Initialize(gameObject, GetTarget());
     }
 
     private void OnEnable()
     {
-        GameObject button = characterButtons[GameManager.Ins.selectedCharacter]
-            .GetComponentInChildren<NavigationTarget>().gameObject;
+        NavigationSystem.Ins.Refresh(gameObject, GetTarget());
+    }
 
-        NavigationSystem.Ins.Select(button);
+    NavigationTarget GetTarget()
+    {
+        return characterButtons[GameManager.Ins.selectedCharacter]
+            .GetComponentInChildren<NavigationTarget>();
     }
 
     public void SwapCharacter(int characterIndex)
@@ -34,15 +41,12 @@ public class CharacterSelectionController : MonoBehaviour
 
     public void OkayButton()
     {
-        backgroundController.SetIsOnGrayBackground(false);
         okayButton.transform.localScale = Vector2.one;
 
         SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
+        NavigationSystem.Ins.Select(skinsButton, true);
 
         SwapMenuManager.Ins.ToMain();
-
-        NavigationSystem.Ins.ClearSelected();
-        NavigationSystem.Ins.Select(skinsButton);
     }
 
     private void UpdateSelectorPosition()
