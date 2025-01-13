@@ -28,8 +28,8 @@ public class PlayerAnimationsController : MonoBehaviour
 
     void SetCharacterSprite()
     {
-        int index = GameManager.Ins.selectedCharacter;
-        Sprite characterSprite = GameManager.Ins.characterSprites[index];
+        int index = GameManager.I.selectedCharacter;
+        Sprite characterSprite = GameManager.I.characterSprites[index];
 
         spriteRenderer.sprite = characterSprite;
     }

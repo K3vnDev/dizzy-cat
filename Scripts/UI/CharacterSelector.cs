@@ -17,7 +17,7 @@ public class CharacterSelector : MonoBehaviour
         Image image = GetComponent<Image>();
         characterIndex = index;
 
-        image.sprite = GameManager.Ins.characterSprites[index];
+        image.sprite = GameManager.I.characterSprites[index];
     }
 
     public void HandleClick()

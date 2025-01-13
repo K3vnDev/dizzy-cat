@@ -1,13 +1,18 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+public enum IMActionMap { UI, Game }
+
 public class InputManager : MonoBehaviour
 {
-    public static InputManager Ins;
+    public static InputManager I;
     Controls controls;
 
     public GameActions Game;
     public Controls.UIActions UI;
+
+    public IMActionMap SelectedMap { get; private set; }
+
 
     public class GameActions
     {
@@ -28,12 +33,12 @@ public class InputManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Ins != null && Ins != this)
+        if (I != null && I != this)
         {
             Destroy(this);
             return;
         }
-        Ins = this;
+        I = this;
 
         controls = new();
         UI = controls.UI;
@@ -53,5 +58,21 @@ public class InputManager : MonoBehaviour
     void Update()
     {
         HandleGameActions();
+    }
+
+    public void UseActionMap(IMActionMap actionMap)
+    {
+        SelectedMap = actionMap;
+
+        if (actionMap == IMActionMap.UI)
+        {
+            controls.UI.Enable();
+            controls.Game.Disable();
+        }
+        else
+        {
+            controls.Game.Enable();
+            controls.UI.Disable();
+        }
     }
 }

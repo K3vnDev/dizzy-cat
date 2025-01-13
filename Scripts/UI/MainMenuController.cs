@@ -12,41 +12,39 @@ public class MainMenuController : MonoBehaviour
     private void Awake()
     {
         Cursor.visible = true;
-        NavigationSystem.Ins.Initialize(gameObject, initialTarget);
+        NavigationSystem.I.Initialize(gameObject, initialTarget);
     }
 
     private void OnEnable()
     {
-        NavigationSystem.Ins.Refresh(gameObject);
+        NavigationSystem.I.Refresh(gameObject);
     }
 
     public void PlayButton()
     {
-        SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Play, .1f);
-        TransitionManager.Ins.LoadScene(TMScene.CurrentLevel, TMTransition.LensCircle);
-
-        NavigationSystem.Ins.Unselect();
+        SFXPlayer.I.PlaySound(SFXPlayer.ButtonSound.Play, .1f);
+        TransitionManager.I.LoadScene(TMScene.CurrentLevel, TMTransition.LensCircle);
     }
 
     public void SkinsButton()
     {
-        SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Enter, .1f);
-        SwapMenuManager.Ins.ToSkins();
+        SFXPlayer.I.PlaySound(SFXPlayer.ButtonSound.Enter, .1f);
+        SwapMenuManager.I.ToSkins();
 
-        NavigationSystem.Ins.Unselect();
+        NavigationSystem.I.Unselect();
     }
 
     public void SettingsButton()
     {
-        SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Enter, .1f);
-        SwapMenuManager.Ins.ToSettings();
+        SFXPlayer.I.PlaySound(SFXPlayer.ButtonSound.Enter, .1f);
+        SwapMenuManager.I.ToSettings();
 
-        NavigationSystem.Ins.Unselect();
+        NavigationSystem.I.Unselect();
     }
 
     public void ExitButtom()
     {
-        SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
+        SFXPlayer.I.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
         Application.Quit();
     }
 }

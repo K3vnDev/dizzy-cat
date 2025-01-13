@@ -30,7 +30,7 @@ public class CantRotateAnimation : MonoBehaviour
         IsActive = true;
 
         RectTransform imageRect = image.rectTransform;
-        SFXPlayer.Ins.PlaySound(soundEffect, 0.15f);
+        SFXPlayer.I.PlaySound(soundEffect, 0.15f);
 
         image.DOFade(1, fadeTime).SetAutoKill();
         int loopsCount = shakesCount * 2;

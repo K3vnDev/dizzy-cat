@@ -1,24 +1,22 @@
-using System.Collections;
 using UnityEngine;
 using DG.Tweening;
 using System;
 
-public class KeyController : MonoBehaviour
+public class KeyController : MonoBehaviour, ICollectable
 {
     [SerializeField] float targetSpeed, minRotationTime;
-    [SerializeField][Range (0, 1)] float rotationTimeFactor;
+    [SerializeField][Range(0, 1)] float rotationTimeFactor;
 
     ParticleSystem keyParticles;
     Animator lockAnimator, animator;
-
-    PlayerController playerController;
     LevitateController levitateController;
+    PlayerController playerController;
 
     [Header("SFX")]
     [SerializeField] AudioClip getKeySound;
     [SerializeField] AudioClip openLockSound;
 
-    bool alreadyTriggered = false;
+    bool alreadyCollected = false;
 
     void Start()
     {
@@ -26,33 +24,32 @@ public class KeyController : MonoBehaviour
         animator = GetComponent<Animator>();
 
         keyParticles = transform.parent.GetComponentInChildren<ParticleSystem>();
-        playerController = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
         levitateController = GetComponent<LevitateController>();
+        playerController = Utils.GetPlayer();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player") && !alreadyTriggered)
-        {
-            Trigger();
-        }
-        else if (other.CompareTag("Lock"))
+        if (other.CompareTag("Lock"))
         {
             animator.SetTrigger("enter");
             lockAnimator.SetTrigger("unlock");
-            SFXPlayer.Ins.PlaySound(openLockSound, .15f);
+
+            SFXPlayer.I.PlaySound(openLockSound, .15f);
         }
     }
 
-    void Trigger()
+    public void Collect()
     {
+        if (alreadyCollected) return;
+
         levitateController.Stop();
         playerController.playerCanMove = false;
 
         animator.SetTrigger("pick");
         keyParticles.Stop();
-        SFXPlayer.Ins.PlaySound(getKeySound, .15f);
-        alreadyTriggered = true;
+        SFXPlayer.I.PlaySound(getKeySound, .15f);
+        alreadyCollected = true;
 
         HandleMoveToLock();
     }

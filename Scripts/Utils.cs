@@ -28,4 +28,10 @@ public static class Utils
         }
         throw new Exception($"Volume was outside bounds. Value recieved: {volume}");
     }
+
+    /// <summary> Gets a PlayerComponent reference using the tag "Player". </summary>
+    public static PlayerController GetPlayer()
+    {
+        return GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+    }
 }

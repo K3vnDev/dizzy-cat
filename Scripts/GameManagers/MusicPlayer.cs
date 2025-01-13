@@ -4,7 +4,7 @@ using UnityEngine.Audio;
 
 public class MusicPlayer : MonoBehaviour
 {
-    public static MusicPlayer Ins;
+    public static MusicPlayer I;
     [HideInInspector] public AudioSource audioSource;
 
     public AudioMixer audioMixer;
@@ -15,12 +15,12 @@ public class MusicPlayer : MonoBehaviour
 
     private void Awake()
     {
-        if (Ins != null && Ins != this)
+        if (I != null && I != this)
         {
             Destroy(this);
             return;
         }
-        Ins = this;
+        I = this;
 
         audioSource = GetComponent<AudioSource>();
     }

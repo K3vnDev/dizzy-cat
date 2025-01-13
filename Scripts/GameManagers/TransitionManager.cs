@@ -9,7 +9,7 @@ public enum TMTransition { LensCircle, None }
 
 public class TransitionManager : MonoBehaviour
 {
-    public static TransitionManager Ins;
+    public static TransitionManager I;
     public TMTransition CurrentTransition { get; private set; } = TMTransition.None;
     public bool IsTransitioning { get; private set; } = false;
 
@@ -20,12 +20,12 @@ public class TransitionManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Ins != null && Ins != this)
+        if (I != null && I != this)
         {
             Destroy(this);
             return;
         }
-        Ins = this;
+        I = this;
     }
 
     public void LoadScene(TMScene scene)
@@ -37,13 +37,13 @@ public class TransitionManager : MonoBehaviour
                 break;
 
             case TMScene.CurrentLevel:
-                SceneManager.LoadScene(GameManager.Ins.currentLevel);
+                SceneManager.LoadScene(GameManager.I.currentLevel);
                 break;
 
             case TMScene.NextLevel:
             {
                 int nextScene = SceneManager.GetActiveScene().buildIndex + 1;
-                GameManager.Ins.currentLevel = nextScene;
+                GameManager.I.currentLevel = nextScene;
 
                 SceneManager.LoadScene(nextScene);
                 break;
@@ -75,7 +75,7 @@ public class TransitionManager : MonoBehaviour
         // Fade out song and start transition animation
         float transitionInDuration = transitionerIn();
 
-        AudioSource source = MusicPlayer.Ins.audioSource;
+        AudioSource source = MusicPlayer.I.audioSource;
         source.DOFade(0, transitionInDuration).SetEase(Ease.InSine);
 
         yield return new WaitForSeconds(transitionInDuration);
@@ -93,7 +93,7 @@ public class TransitionManager : MonoBehaviour
         mainCamera.cullingMask = -1;
         float transitionOutDuration = transitionerOut();
 
-        MusicPlayer.Ins.Restart();
+        MusicPlayer.I.Restart();
         source.volume = 0.5f;
 
         yield return new WaitForSeconds(transitionOutDuration);

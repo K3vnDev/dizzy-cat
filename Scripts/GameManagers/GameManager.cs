@@ -2,23 +2,25 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public static GameManager Ins;
+    public static GameManager I;
 
-    public bool fsActive = true;
-    public int currentLevel; // one-indexed
+    public int currentLevel;
 
     [Header("Character")]
     public int selectedCharacter = 0;
     public Sprite[] characterSprites;
 
+    [Header ("Settings")]
+    public bool onFullscreen = true;
+
     private void Awake()
     {
-        if (Ins != null && Ins != this)
+        if (I != null && I != this)
         {
             Destroy(gameObject);
             return;
         }
-        Ins = this;
+        I = this;
         DontDestroyOnLoad(gameObject);
 
         QualitySettings.vSyncCount = 1;

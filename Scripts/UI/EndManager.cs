@@ -41,7 +41,7 @@ public class EndManager : MonoBehaviour
 
     public void Trigger()
     {
-        GameManager.Ins.currentLevel = 1;
+        GameManager.I.currentLevel = 1;
         pauseMenu.gameCanBePaused = false;
 
         InitializeTexts();
@@ -52,10 +52,10 @@ public class EndManager : MonoBehaviour
     {
         yield return new WaitForSeconds(initialWaitTime);
 
-        SFXPlayer.Ins.PlaySound(winSound);
+        SFXPlayer.I.PlaySound(winSound);
         bgImage.DOFade(bgAlpha, bgAnimTime);
 
-        MusicPlayer.Ins.audioSource.DOFade(0, fadeOutMusicTime);
+        MusicPlayer.I.audioSource.DOFade(0, fadeOutMusicTime);
 
         foreach (TextMeshProUGUI textTMPro in uiTexts)
         {
@@ -67,7 +67,7 @@ public class EndManager : MonoBehaviour
 
         yield return new WaitForSeconds(sceneWaitTime);
 
-        TransitionManager.Ins.LoadScene(TMScene.MainMenu, TMTransition.LensCircle);
+        TransitionManager.I.LoadScene(TMScene.MainMenu, TMTransition.LensCircle);
     }
 
     void InitializeTexts()

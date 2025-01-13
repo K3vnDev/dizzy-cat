@@ -167,7 +167,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  currentVolume: 0
+  currentVolume: 70
 --- !u!1 &2653379406792679852
 GameObject:
   m_ObjectHideFlags: 0
@@ -214,11 +214,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0726f428b1b18fa4882f174d67bd5245, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IsNavigating: 0
   originalMaterial: {fileID: 2100000, guid: ef30ae8dd4472714e8ecfbbe5f7c5fb9, type: 2}
   fadeInTime: 0.2
-  fadeOutTime: 0.9
-  deafultMoveRepeatRate: 0.25
+  fadeOutTime: 0.7
+  deafultMoveRepeatRate: 0.2
+  sliderMoveRepeatRate: 0.01
 --- !u!114 &5719361216656696191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -432,7 +432,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 960177e9c5d055e44b0715cbf3dc853b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fsActive: 1
   currentLevel: 1
   selectedCharacter: 0
   characterSprites:
@@ -444,6 +443,7 @@ MonoBehaviour:
   - {fileID: 1150595536, guid: 596343eef0206764888eedf0615c7355, type: 3}
   - {fileID: 354770336, guid: 596343eef0206764888eedf0615c7355, type: 3}
   - {fileID: -1595798593, guid: 596343eef0206764888eedf0615c7355, type: 3}
+  onFullscreen: 1
 --- !u!1 &9107976882186622934
 GameObject:
   m_ObjectHideFlags: 0

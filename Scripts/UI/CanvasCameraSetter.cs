@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CanvasCameraSetter : MonoBehaviour
 {
-    void Start()
+    void Awake()
     {
         GetComponent<Canvas>().worldCamera = Camera.main;
     }

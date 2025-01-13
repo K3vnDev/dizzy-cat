@@ -11,22 +11,24 @@ public class SwapMenuManager : MonoBehaviour
 
     public NavigationTarget[] orderedExitButtons = new NavigationTarget[2];
 
-    public static SwapMenuManager Ins;
+    public static SwapMenuManager I;
     BackgroundController backgroundController;
 
     [SerializeField] GameObject skinsButton, settingsButton;
 
     private void Awake()
     {
-        if (Ins != null && Ins != this)
+        if (I != null && I != this)
         {
             Destroy(this);
             return;
         }
-        Ins = this;
+        I = this;
 
         backgroundController = GameObject.FindWithTag("Background")
            .GetComponent<BackgroundController>();
+
+        InputManager.I.UseActionMap(IMActionMap.UI);
     }
 
     void HandleCurrentMenu()
@@ -35,6 +37,7 @@ public class SwapMenuManager : MonoBehaviour
         {
             bool isSelected = (int) currentMenu == i;
             orderedMenus[i].SetActive(isSelected);
+
         }
     }
 
@@ -63,21 +66,21 @@ public class SwapMenuManager : MonoBehaviour
 
     private void OnEnable()
     {
-        if (InputManager.Ins == null) return;
-        InputManager.Ins.UI.Exit.performed += OnUIBackHandler;
+        if (InputManager.I == null) return;
+        InputManager.I.UI.Exit.performed += OnUIBackHandler;
     }
 
     private void OnDisable()
     {
-        if (InputManager.Ins == null) return;
-        InputManager.Ins.UI.Exit.performed -= OnUIBackHandler;
+        if (InputManager.I == null) return;
+        InputManager.I.UI.Exit.performed -= OnUIBackHandler;
     }
 
     void OnUIBackHandler(InputAction.CallbackContext e)
     {
         if (currentMenu == Menu.Main) return;
 
-        SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
+        SFXPlayer.I.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
         backgroundController.SetIsOnGrayBackground(false);
 
         orderedExitButtons[(int) currentMenu - 1].Trigger();

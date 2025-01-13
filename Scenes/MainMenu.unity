@@ -1738,10 +1738,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6398d80ef32d704d9401e5498660ee9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  content: Level {level_number}
   gap: 50
   moveTime: 0.5
   extraButtonTextPrefab: {fileID: 2665307251154634401, guid: 16ad8a9dcfc82234fb1c15122f66ccbe, type: 3}
-  textContent: Level (level_number)
 --- !u!114 &1294174775
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,50 +1,57 @@
 using System.Collections;
 using UnityEngine;
 
-public class GoalController : MonoBehaviour
+public class GoalController : MonoBehaviour, ICollectable
 {
     [SerializeField] bool isFinal;
     [SerializeField] float sceneLoadDelay;
-    [SerializeField] GameObject selfParticles;
+    [SerializeField] AudioClip soundEffect;
 
-    PlayerController playerController;
     SpriteRenderer spriteRenderer;
     EndManager endManager;
+    PlayerController playerController;
+
+    bool alreadyCollected = false;
 
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
 
-        playerController = GameObject.FindGameObjectWithTag("Player")
-            .GetComponent<PlayerController>();
-
         endManager = GameObject.FindWithTag("End Manager")
             .GetComponent<EndManager>();
+
+        playerController = Utils.GetPlayer();
     }
 
-    public void Trigger()
+    public void Collect()
     {
-        playerController.HandlePickFish();
-        GetComponent<BoxCollider2D>().enabled = false;
+        if (alreadyCollected) return;
+
+        playerController.PlayParticles();
+        playerController.playerCanMove = false;
+        playerController.levelCompleted = true;
+
+        SFXPlayer.I.PlaySound(soundEffect, 0.1f);
+
         spriteRenderer.enabled = false;
-        selfParticles.SetActive(false);
+        alreadyCollected = true;
+
+        ParticleSystem particles = transform.parent.GetComponentInChildren<ParticleSystem>();
+        particles.Stop();
+
 
         if (isFinal )
         {
             endManager.Trigger();
             return;
         }
-       StartCoroutine(LoadNextScene());
+
+        StartCoroutine(LoadNextScene());
     }
 
     IEnumerator LoadNextScene()
     {
         yield return new WaitForSeconds(sceneLoadDelay);
-        TransitionManager.Ins.LoadScene(TMScene.NextLevel);
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.CompareTag("Player")) Trigger();
+        TransitionManager.I.LoadScene(TMScene.NextLevel);
     }
 }

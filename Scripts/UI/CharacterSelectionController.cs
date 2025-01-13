@@ -17,41 +17,45 @@ public class CharacterSelectionController : MonoBehaviour
         charactersGrid = GameObject.FindWithTag("CharactersGrid");
         InitCharacterButtons();
 
-        NavigationSystem.Ins.Initialize(gameObject, GetTarget());
+        NavigationSystem.I.Initialize(gameObject, GetTarget());
     }
 
     private void OnEnable()
     {
-        NavigationSystem.Ins.Refresh(gameObject, GetTarget());
+        NavigationSystem.I.Refresh(gameObject, GetTarget());
     }
 
     NavigationTarget GetTarget()
     {
-        return characterButtons[GameManager.Ins.selectedCharacter]
+        return characterButtons[GameManager.I.selectedCharacter]
             .GetComponentInChildren<NavigationTarget>();
     }
 
     public void SwapCharacter(int characterIndex)
     {
-        SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Select, .1f);
-
-        GameManager.Ins.selectedCharacter = characterIndex;
+        SFXPlayer.I.PlaySound(SFXPlayer.ButtonSound.Select, .1f);
+        GameManager.I.selectedCharacter = characterIndex;
         UpdateSelectorPosition();
+
+        if (!NavigationSystem.I.IsNavigating)
+        {
+            NavigationSystem.I.Select(GetTarget(), NavigationSystem.SetMaterial.Never);
+        }
     }
 
     public void OkayButton()
     {
         okayButton.transform.localScale = Vector2.one;
 
-        SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
-        NavigationSystem.Ins.Select(skinsButton, true);
+        SFXPlayer.I.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
+        NavigationSystem.I.Select(skinsButton, onlyIfNavigating: true);
 
-        SwapMenuManager.Ins.ToMain();
+        SwapMenuManager.I.ToMain();
     }
 
     private void UpdateSelectorPosition()
     {
-        int index = GameManager.Ins.selectedCharacter;
+        int index = GameManager.I.selectedCharacter;
         _selector.transform.SetParent(characterButtons[index].transform, false);
         _selector.transform.SetAsFirstSibling();
     }

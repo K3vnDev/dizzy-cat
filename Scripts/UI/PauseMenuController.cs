@@ -9,6 +9,8 @@ public class PauseMenuController : MonoBehaviour
     public bool gameCanBePaused = true;
     CanvasGroup canvasGroup;
 
+    bool isOnFirstPause = true;
+
     [SerializeField] TextMeshProUGUI currentLevelIndicator;
 
     [SerializeField] NavigationTarget firstSelected;
@@ -18,14 +20,14 @@ public class PauseMenuController : MonoBehaviour
         canvasGroup = GetComponent<CanvasGroup>();
         SetCurrentLevelIndicatorText();
 
-        NavigationSystem.Ins.Initialize(gameObject, firstSelected);
+        NavigationSystem.I.Initialize(gameObject, firstSelected);
     }
 
-    public void TogglePause()
+    public void SetGameIsPaused(bool value)
     {
-        if (!gameCanBePaused) return;
+        if ((!gameCanBePaused && value) || (value == GameIsPaused)) return;
 
-        GameIsPaused = !GameIsPaused;
+        GameIsPaused = value;
 
         canvasGroup.interactable = GameIsPaused;
         canvasGroup.alpha = GameIsPaused ? 1 : 0;
@@ -33,43 +35,61 @@ public class PauseMenuController : MonoBehaviour
         Time.timeScale = GameIsPaused ? 0 : 1;
         Cursor.visible = GameIsPaused;
 
-        MusicPlayer.Ins.LowerVolume(GameIsPaused);
+        MusicPlayer.I.LowerVolume(GameIsPaused);
 
-        if (!GameIsPaused)
+        if (GameIsPaused)
         {
-            SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Enter, .1f);
+            InputManager.I.UseActionMap(IMActionMap.UI);
+
+            if (isOnFirstPause)
+            {
+                isOnFirstPause = false;
+                return;
+            }
+            NavigationSystem.I.Select(firstSelected);
+        }
+        else
+        {
+            InputManager.I.UseActionMap(IMActionMap.Game);
+            SFXPlayer.I.PlaySound(SFXPlayer.ButtonSound.Enter, .1f);
         }
     }
 
     public void MainMenuButton()
     {
-        SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
+        SFXPlayer.I.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
 
-        MusicPlayer.Ins.LowerVolume(false);
+        MusicPlayer.I.LowerVolume(false);
         Time.timeScale = 1f;
 
-        TransitionManager.Ins.LoadScene(TMScene.MainMenu, TMTransition.LensCircle);
+        TransitionManager.I.LoadScene(TMScene.MainMenu, TMTransition.LensCircle);
     }
 
     void SetCurrentLevelIndicatorText()
     {
-        int currentLevel = GameManager.Ins.currentLevel;
+        int currentLevel = GameManager.I.currentLevel;
         currentLevelIndicator.text = $"Level {currentLevel}/10";
     }
 
-    void HandleTogglePause(InputAction.CallbackContext _) => TogglePause();
+    void HandleGamePauseInput(InputAction.CallbackContext _)
+    {
+        SetGameIsPaused(true);
+    }
+
+    void HandleUIExitInput(InputAction.CallbackContext _)
+    {
+        SetGameIsPaused(false);
+    }
 
     private void OnEnable()
     {
-        InputManager.Ins.Game.Pause.performed += HandleTogglePause;
-        InputManager.Ins.UI.Exit.performed += HandleTogglePause;
-
-        NavigationSystem.Ins.Refresh(gameObject, firstSelected);
+        InputManager.I.Game.Pause.performed += HandleGamePauseInput;
+        InputManager.I.UI.Exit.performed += HandleUIExitInput;
     }
 
     private void OnDisable()
     {
-        InputManager.Ins.Game.Pause.performed -= HandleTogglePause;
-        InputManager.Ins.UI.Exit.performed -= HandleTogglePause;
+        InputManager.I.Game.Pause.performed -= HandleGamePauseInput;
+        InputManager.I.UI.Exit.performed -= HandleUIExitInput;
     }
 }

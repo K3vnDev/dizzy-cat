@@ -2,16 +2,18 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 public class NavigationSystem : MonoBehaviour
 {
-    public static NavigationSystem Ins;
+    public static NavigationSystem I;
+    public enum SetMaterial { Navigating, Always, Never }
 
     NavigationTarget[] targets;
-    NavigationTarget currentSelected;
+    public NavigationTarget CurrentSelected { get; private set; }
 
-    public bool IsNavigating = false;
+    public bool IsNavigating { get; private set; } = false;
     [SerializeField] Material originalMaterial;
 
     [Header("Animation")]
@@ -20,6 +22,7 @@ public class NavigationSystem : MonoBehaviour
 
     [Header ("Move Repeat")]
     [SerializeField][Range (0, 2)] float deafultMoveRepeatRate = 0.2f;
+    [SerializeField][Range (0, 2)] float sliderMoveRepeatRate = 0.025f;
 
     float rateTimer = 0f;
 
@@ -27,23 +30,23 @@ public class NavigationSystem : MonoBehaviour
 
     void Awake()
     {
-        if (Ins != null && Ins != this)
+        if (I != null && I != this)
         {
             Destroy(this);
             return;
         }
-        Ins = this;
+        I = this;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
-        if (currentSelected == null) return;
+        if (CurrentSelected == null && InputManager.I.SelectedMap != IMActionMap.UI) return;
 
-        Vector2 dir = InputManager.Ins.UI.Navigate.ReadValue<Vector2>();
+        Vector2 dir = InputManager.I.UI.Navigate.ReadValue<Vector2>();
         bool onXAxis = Mathf.Abs(dir.x) > Mathf.Abs(dir.y);
 
-        float moveRepeatRate = currentSelected.type == NavigationTarget.Type.Slider && onXAxis
-            ? 0 : deafultMoveRepeatRate;
+        float moveRepeatRate = CurrentSelected.type == NTType.Slider && onXAxis
+            ? sliderMoveRepeatRate : deafultMoveRepeatRate;
 
         if ((dir.x != 0 || dir.y != 0) && rateTimer <= 0)
         {
@@ -52,7 +55,7 @@ public class NavigationSystem : MonoBehaviour
         }
         else if (rateTimer > 0)
         {
-            rateTimer -= Time.fixedUnscaledDeltaTime;
+            rateTimer -= Time.unscaledDeltaTime;
         }
     }
 
@@ -66,26 +69,26 @@ public class NavigationSystem : MonoBehaviour
 
         if (onXAxis)
         {
-            if (currentSelected.type == NavigationTarget.Type.Slider)
+            if (CurrentSelected.type == NTType.Slider)
             {
-                currentSelected.Trigger(Mathf.Sign(dir.x));
+                CurrentSelected.Trigger(Mathf.Sign(dir.x));
             }
             else
             {
                 if (dir.x < 0)
-                    Navigate(currentSelected.neighbours.left);
+                    Navigate(CurrentSelected.neighbours.left);
 
                 else if (dir.x > 0)
-                    Navigate(currentSelected.neighbours.right);
+                    Navigate(CurrentSelected.neighbours.right);
             }
         }
         else
         {
             if (dir.y < 0)
-                Navigate(currentSelected.neighbours.bottom);
+                Navigate(CurrentSelected.neighbours.bottom);
 
             else if (dir.y > 0)
-                Navigate(currentSelected.neighbours.top);
+                Navigate(CurrentSelected.neighbours.top);
         }
     }
 
@@ -114,7 +117,7 @@ public class NavigationSystem : MonoBehaviour
         targets = inputsContainer
             .GetComponentsInChildren<NavigationTarget>();
 
-        if (selectTarget != null) currentSelected = selectTarget;
+        if (selectTarget != null) CurrentSelected = selectTarget;
 
         if (IsNavigating) StartNavigating();
     }
@@ -122,55 +125,66 @@ public class NavigationSystem : MonoBehaviour
     /// <summary>Unselects the material of the selected target</summary>
     public void Unselect()
     {
-        UnSetMaterialOf(currentSelected);
+        UnSetMaterialOf(CurrentSelected);
     }
 
     /// <summary>Forces the select of a given target</summary>
-    public void Select(NavigationTarget target, bool onlyIfNavigating = false)
+    public void Select(NavigationTarget target, SetMaterial setMaterial = SetMaterial.Navigating, bool onlyIfNavigating = false)
     {
         if (onlyIfNavigating && !IsNavigating) return;
 
         Unselect();
+        CurrentSelected = target;
 
-        currentSelected = target;
-        SetMaterialOf(currentSelected);
+        if (setMaterial == SetMaterial.Always || (setMaterial == SetMaterial.Navigating && IsNavigating))
+        {
+            SetMaterialOf(CurrentSelected);
+        }
     }
 
-    public void StartNavigating()
+    public void StartNavigating(bool onlyIfNotNavigating = false)
     {
-        SetMaterialOf(currentSelected);
+        if (onlyIfNotNavigating && IsNavigating) return;
+
         IsNavigating = true;
+        SetMaterialOf(CurrentSelected);
     }
 
     public void StopNavigating()
     {
+        if (!IsNavigating) return;
+
         IsNavigating = false;
-        UnSetMaterialOf(currentSelected, true);
+        UnSetMaterialOf(CurrentSelected, true);
     }
 
     void Navigate(NavigationTarget target)
     {
         if (target == null) return;
 
-        UnSetMaterialOf(currentSelected);
+        UnSetMaterialOf(CurrentSelected);
         SetMaterialOf(target);
 
-        currentSelected = target;
+        CurrentSelected = target;
     }
 
     private void OnEnable()
     {
-        InputManager.Ins.UI.Accept.performed += HandleUIAccept;
+        InputManager.I.UI.Accept.performed += HandleUIAccept;
+        InputManager.I.UI.Click.performed += HandleUIClick;
+        InputManager.I.UI.Exit.performed += HandleUIExit;
     }
 
     private void OnDisable()
     {
-        InputManager.Ins.UI.Accept.performed -= HandleUIAccept;
+        InputManager.I.UI.Accept.performed -= HandleUIAccept;
+        InputManager.I.UI.Click.performed -= HandleUIClick;
+        InputManager.I.UI.Exit.performed -= HandleUIExit;
     }
 
-    private void HandleUIAccept(UnityEngine.InputSystem.InputAction.CallbackContext _)
+    private void HandleUIAccept(InputAction.CallbackContext _)
     {
-        if (currentSelected == null) return;
+        if (CurrentSelected == null) return;
 
         if (!IsNavigating)
         {
@@ -178,7 +192,19 @@ public class NavigationSystem : MonoBehaviour
             return;
         }
 
-        currentSelected.Trigger();
+        CurrentSelected.Trigger();
+    }
+
+    private void HandleUIClick(InputAction.CallbackContext _)
+    {
+        if (CurrentSelected == null) return;
+
+        StopNavigating();
+    }
+
+    private void HandleUIExit(InputAction.CallbackContext _)
+    {
+        StartNavigating(true);
     }
 
     void SetMaterialOf(NavigationTarget target)
@@ -218,11 +244,7 @@ public class NavigationSystem : MonoBehaviour
                 .SetEase(Ease.InSine)
                 .SetId(FADE_OUT_ID)
                 .SetUpdate(true)
-                .OnComplete(() =>
-                {
-                    Debug.Log($"Graph material of {graph.name} was unset from timeout");
-                    graph.material = null;
-                });
+                .OnComplete(() => graph.material = null);
         }
     }
 }

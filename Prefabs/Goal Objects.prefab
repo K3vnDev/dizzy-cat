@@ -4973,7 +4973,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isFinal: 0
   sceneLoadDelay: 0.9
-  selfParticles: {fileID: 498476651}
+  soundEffect: {fileID: 8300000, guid: bb110de40b0d0c941af41e1fa85b16d6, type: 3}
 --- !u!114 &1883924791
 MonoBehaviour:
   m_ObjectHideFlags: 0

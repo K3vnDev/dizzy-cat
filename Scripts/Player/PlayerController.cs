@@ -3,8 +3,9 @@ using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header ("Ground Checker")]
-    [SerializeField] Vector2 boxSize;
+    [Header("Ground Checker")]
+    [SerializeField] Vector2 groundCheckerSize = new(0.2f, 0.03f);
+    [SerializeField] float groundCheckerOffsetY = -0.035f;
     [SerializeField] LayerMask groundLayer;
 
     public bool isGrounded = false;
@@ -36,9 +37,9 @@ public class PlayerController : MonoBehaviour
     PauseMenuController pauseMenuController;
 
     float horizontalAxis;
-    bool fishCollected = false;
     Queue<float> inputBuffer;
     int ignoreCatSoundsLeft = 0;
+    public bool levelCompleted = false;
 
     readonly float FISH_PARTICLES_OFFSET = 0.25f;
     readonly float INPUT_BUFFER_TIME = 0.13f;
@@ -51,6 +52,8 @@ public class PlayerController : MonoBehaviour
 
         initialGravity = rb.gravityScale;
         inputBuffer = new();
+
+        InputManager.I.UseActionMap(IMActionMap.Game);
     }
 
     void Start()
@@ -69,7 +72,7 @@ public class PlayerController : MonoBehaviour
 
         if (!pauseMenuController.GameIsPaused)
         {
-            horizontalAxis = InputManager.Ins.Game.RotateDirection;
+            horizontalAxis = InputManager.I.Game.RotateDirection;
 
             if (horizontalAxis != 0)
             {
@@ -98,35 +101,34 @@ public class PlayerController : MonoBehaviour
 
     void HandleRotate()
     {
-        float horizontalAxis = PeekInputBuffer();
+        float newHorizontalAxis = PeekInputBuffer();
 
-        if (!scenarioController.isRotating && playerCanMove && horizontalAxis != 0)
+        if (!scenarioController.isRotating && playerCanMove && newHorizontalAxis != 0)
         {
-            scenarioController.Rotate(horizontalAxis);
-            PlaySound(rotateSound, .2f);
+            scenarioController.Rotate(newHorizontalAxis);
+            SFXPlayer.I.PlaySound(rotateSound, .2f);
             inputBuffer.Clear();
         }
-        else if (!playerCanMove && this.horizontalAxis != 0 && !fishCollected)
+        else if (!playerCanMove && horizontalAxis != 0 && !levelCompleted)
         {
             cantRotateAnimation.Trigger();
         }
     }
 
-    void GroundCheckingLogic()
+    Vector2 GetGroundCheckerBoxPosition()
     {
-        Vector2 boxPosition = new (transform.position.x, transform.position.y - transform.localScale.y / 2);
-        isGrounded = Physics2D.OverlapBox(boxPosition, boxSize, 6, groundLayer);
+        return new(transform.position.x, transform.position.y - (transform.localScale.y / 2) + groundCheckerOffsetY);
     }
 
-    public void HandlePickFish()
+    void GroundCheckingLogic()
+    {
+        isGrounded = Physics2D.OverlapBox(GetGroundCheckerBoxPosition(), groundCheckerSize, 6, groundLayer);
+    }
+
+    public void PlayParticles()
     {
         Vector2 particlesPos = new (transform.position.x, transform.position.y - FISH_PARTICLES_OFFSET);
         Instantiate(playerParticles, particlesPos, Quaternion.Euler(Vector3.zero));
-
-        PlaySound(getFishSound, 0.1f);
-
-        playerCanMove = false;
-        fishCollected = true;
     }
 
     void DequeueInputBuffer()
@@ -140,20 +142,18 @@ public class PlayerController : MonoBehaviour
         catch { return 0; }
     }
 
-    void PlaySound(AudioClip sound, float pitchRange)
-    {
-        SFXPlayer.Ins.PlaySound(sound, pitchRange);
-    }
-
     void HandleCatSound()
     {
-        if (ignoreCatSoundsLeft <= 0 && !fishCollected)
+        if (isGrounded && !scenarioController.isRotating)
         {
-            PlaySound(catMeowSound, 0.33f);
-            ignoreCatSoundsLeft = Random.Range(4, 10);
-            return;
+            if (ignoreCatSoundsLeft <= 0 && playerCanMove && !levelCompleted)
+            {
+                SFXPlayer.I.PlaySound(catMeowSound, 0.25f);
+                ignoreCatSoundsLeft = Random.Range(4, 10);
+                return;
+            }
+            ignoreCatSoundsLeft--;
         }
-        ignoreCatSoundsLeft--;
     }
 
     void CircleCollidersLogic()
@@ -182,7 +182,12 @@ public class PlayerController : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;
-        Vector2 position = new(transform.position.x, transform.position.y - transform.localScale.y / 2);
-        Gizmos.DrawWireCube(position, boxSize);
+        Gizmos.DrawWireCube(GetGroundCheckerBoxPosition(), groundCheckerSize);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        ICollectable collectable = collision.GetComponent<ICollectable>();
+        collectable?.Collect();
     }
 }

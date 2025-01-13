@@ -25,33 +25,33 @@ public class SettingsMenuController : MonoBehaviour
 
     private void Start()
     {
-        ChangeMusicVolume(MusicPlayer.Ins.currentVolume);
-        ChangeSFXVolume(SFXPlayer.Ins.currentVolume);
+        ChangeMusicVolume(MusicPlayer.I.currentVolume);
+        ChangeSFXVolume(SFXPlayer.I.currentVolume);
 
-        fullscreen_toggle.isOn = GameManager.Ins.fsActive;
+        fullscreen_toggle.isOn = GameManager.I.onFullscreen;
 
-        NavigationSystem.Ins.Initialize(gameObject, firstSelected);
+        NavigationSystem.I.Initialize(gameObject, firstSelected);
     }
 
     private void OnEnable()
     {
-        NavigationSystem.Ins.Refresh(gameObject, firstSelected);
+        NavigationSystem.I.Refresh(gameObject, firstSelected);
     }
 
     public void OkayButton()
     {
-        SFXPlayer.Ins.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
-        NavigationSystem.Ins.Select(settingsButton, true);
+        SFXPlayer.I.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
+        NavigationSystem.I.Select(settingsButton, onlyIfNavigating: true);
 
-        SwapMenuManager.Ins.ToMain();
+        SwapMenuManager.I.ToMain();
     }
 
     public void ChangeMusicVolume(float vol)
     {
-        MusicPlayer.Ins.SetVolume(vol);
+        MusicPlayer.I.SetVolume(vol);
         music_voltext.text = vol.ToString();
 
-        MusicPlayer.Ins.currentVolume = vol;
+        MusicPlayer.I.currentVolume = vol;
         PlaySliderSound();
 
         music_slider.value = vol;
@@ -59,7 +59,7 @@ public class SettingsMenuController : MonoBehaviour
 
     public void ChangeSFXVolume(float vol)
     {
-        SFXPlayer.Ins.SetVolume(vol);
+        SFXPlayer.I.SetVolume(vol);
         sfx_voltext.text = vol.ToString();
 
         PlaySliderSound();
@@ -71,7 +71,7 @@ public class SettingsMenuController : MonoBehaviour
     {
         if (nextSliderSound < Time.time)
         {
-            SFXPlayer.Ins.PlaySound(sliderSound, .1f);
+            SFXPlayer.I.PlaySound(sliderSound, .1f);
             nextSliderSound = Time.time + sliderSoundCoolDown;
         }
     }
@@ -79,9 +79,9 @@ public class SettingsMenuController : MonoBehaviour
     public void SetFullscreen(bool fullscreen)
     {
         Screen.fullScreen = fullscreen;
-        SFXPlayer.Ins.PlaySound(
+        SFXPlayer.I.PlaySound(
             fullscreen ? fs_sound1 : fs_sound2, .1f);
 
-        GameManager.Ins.fsActive = fullscreen;
+        GameManager.I.onFullscreen = fullscreen;
     }
 }

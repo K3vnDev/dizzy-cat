@@ -84,7 +84,7 @@ public class ButtonsController : MonoBehaviour,
             if (pauseMenu != null) isDisabledInGame = !pauseMenu.GameIsPaused;
         }
         return 
-            TransitionManager.Ins.IsTransitioning 
+            TransitionManager.I.IsTransitioning 
             || behavior == Behavior.Disabled 
             || isDisabledInGame;
     }

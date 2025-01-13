@@ -3,7 +3,7 @@ using UnityEngine.Audio;
 
 public class SFXPlayer : MonoBehaviour
 {
-    public static SFXPlayer Ins;
+    public static SFXPlayer I;
 
     [SerializeField] AudioMixerGroup audioMixerGroup;
     public float currentVolume = 85;
@@ -14,12 +14,12 @@ public class SFXPlayer : MonoBehaviour
 
     private void Awake()
     {
-        if (Ins != null && Ins != this)
+        if (I != null && I != this)
         {
             Destroy(this);
             return;
         }
-        Ins = this;
+        I = this;
     }
 
     private void Start()

@@ -98,6 +98,7 @@ GameObject:
   - component: {fileID: 387189076}
   - component: {fileID: 2385367448200004574}
   - component: {fileID: 486874043646640138}
+  - component: {fileID: 498317621273014904}
   - component: {fileID: 8662943031506069254}
   m_Layer: 6
   m_Name: Player
@@ -134,7 +135,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6915503fa39b63746a0739275973176d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boxSize: {x: 0.2, y: 0.03}
+  groundCheckerSize: {x: 0.2, y: 0.1}
+  groundCheckerOffsetY: 0.035
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
@@ -146,10 +148,10 @@ MonoBehaviour:
   errorSound: {fileID: 8300000, guid: bf0c85355dbbbeb48a5a0c4c83106437, type: 3}
   rotateSound: {fileID: 8300000, guid: 8b04fe71cc89e0c40b97b744228d77c2, type: 3}
   catMeowSound: {fileID: 8300000, guid: 19d87e511e677074895d17fe6c0e00c8, type: 3}
-  cantRotateSign: {fileID: 4755206598921473901, guid: 2a4132b0ac4b89843aef9f499c29cfa3, type: 3}
   rb: {fileID: 0}
   defaultCollider: {fileID: 2385367448200004574}
   fallingCollider: {fileID: 486874043646640138}
+  levelCompleted: 0
 --- !u!114 &5883168084116776874
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -210,6 +212,22 @@ CircleCollider2D:
   m_Offset: {x: 0, y: -0.3}
   serializedVersion: 2
   m_Radius: 0.15
+--- !u!58 &498317621273014904
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8662943031506069255}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 6200000, guid: 4e032e0472626e44ea2101d4c3c4cafa, type: 2}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.5
 --- !u!50 &8662943031506069254
 Rigidbody2D:
   serializedVersion: 4

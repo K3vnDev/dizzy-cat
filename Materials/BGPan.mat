@@ -42,7 +42,7 @@ Material:
     - _BUILTIN_QueueControl: 0
     - _BUILTIN_QueueOffset: 0
     m_Colors:
-    - _PrimaryCol: {r: 0.28627452, g: 0.63529414, b: 0.41176474, a: 1}
+    - _PrimaryCol: {r: 0.25772223, g: 0.49043775, b: 0.7329783, a: 1}
     - _PrimaryColor: {r: 1, g: 0.1680328, b: 0, a: 1}
     - _ScrollVel: {r: 0.3, g: 0.1, b: 0, a: 0}
   m_BuildTextureStacks: []
