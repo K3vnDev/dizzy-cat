@@ -1382,7 +1382,7 @@ GameObject:
   - component: {fileID: 1217103608}
   - component: {fileID: 1217103612}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: MainMenuCanvas
   m_TagString: Canvas
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2402,7 +2402,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2164235749776983618, guid: f91896b4ae798b946860dbf3b7460f45, type: 3}
       propertyPath: m_text
-      value: Sounds
+      value: SFX
       objectReference: {fileID: 0}
     - target: {fileID: 2164235750791818965, guid: f91896b4ae798b946860dbf3b7460f45, type: 3}
       propertyPath: m_Name
@@ -2675,54 +2675,6 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1631507951}
-    - target: {fileID: 2980990357002538519, guid: 6dc81dac856c9ed49b98af5449f08999, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: -100
-      objectReference: {fileID: 0}
-    - target: {fileID: 2980990357002538519, guid: 6dc81dac856c9ed49b98af5449f08999, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2980990357235609500, guid: 6dc81dac856c9ed49b98af5449f08999, type: 3}
-      propertyPath: m_Pivot.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2980990357235609500, guid: 6dc81dac856c9ed49b98af5449f08999, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2980990357235609500, guid: 6dc81dac856c9ed49b98af5449f08999, type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2980990357235609500, guid: 6dc81dac856c9ed49b98af5449f08999, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2980990357235609500, guid: 6dc81dac856c9ed49b98af5449f08999, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: -100.00009
-      objectReference: {fileID: 0}
-    - target: {fileID: 2980990357235609500, guid: 6dc81dac856c9ed49b98af5449f08999, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 147
-      objectReference: {fileID: 0}
-    - target: {fileID: 2980990357235609500, guid: 6dc81dac856c9ed49b98af5449f08999, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 49.999954
-      objectReference: {fileID: 0}
-    - target: {fileID: 2980990357235609500, guid: 6dc81dac856c9ed49b98af5449f08999, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2980990357235609501, guid: 6dc81dac856c9ed49b98af5449f08999, type: 3}
-      propertyPath: m_fontSize
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 2980990357235609501, guid: 6dc81dac856c9ed49b98af5449f08999, type: 3}
-      propertyPath: m_enableAutoSizing
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 2980990357246907580, guid: 6dc81dac856c9ed49b98af5449f08999, type: 3}
       propertyPath: m_Name
       value: Fullscreen Toggle
@@ -2809,14 +2761,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2980990357246907581, guid: 6dc81dac856c9ed49b98af5449f08999, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2980990358756747811, guid: 6dc81dac856c9ed49b98af5449f08999, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2980990358756747811, guid: 6dc81dac856c9ed49b98af5449f08999, type: 3}
-      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

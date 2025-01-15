@@ -1,11 +1,10 @@
 using System.Collections;
 using UnityEngine;
 
-public class GoalController : MonoBehaviour, ICollectable
+public class FishController : MonoBehaviour, ICollectable
 {
     [SerializeField] bool isFinal;
-    [SerializeField] float sceneLoadDelay;
-    [SerializeField] AudioClip soundEffect;
+    [SerializeField] float sceneLoadDelay = 0.9f;
 
     SpriteRenderer spriteRenderer;
     EndManager endManager;
@@ -15,7 +14,7 @@ public class GoalController : MonoBehaviour, ICollectable
 
     private void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
         endManager = GameObject.FindWithTag("End Manager")
             .GetComponent<EndManager>();
@@ -31,14 +30,12 @@ public class GoalController : MonoBehaviour, ICollectable
         playerController.playerCanMove = false;
         playerController.levelCompleted = true;
 
-        SFXPlayer.I.PlaySound(soundEffect, 0.1f);
+        SFXPlayer.I.PlaySound(SFXPlayer.Sound.Eating, 0.1f);
 
         spriteRenderer.enabled = false;
         alreadyCollected = true;
 
-        ParticleSystem particles = transform.parent.GetComponentInChildren<ParticleSystem>();
-        particles.Stop();
-
+        StopParticles();
 
         if (isFinal )
         {
@@ -47,6 +44,15 @@ public class GoalController : MonoBehaviour, ICollectable
         }
 
         StartCoroutine(LoadNextScene());
+    }
+
+    void StopParticles()
+    {
+        ParticleSystem[] particles = transform.parent
+            .GetComponentsInChildren<ParticleSystem>();
+
+        foreach (ParticleSystem particle in particles)
+            particle.Stop();
     }
 
     IEnumerator LoadNextScene()

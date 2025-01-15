@@ -43,8 +43,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 24300002, guid: 69a45a7d7adcdd24b87ae071f523a5db, type: 2}
-  m_audioClip: {fileID: 8300000, guid: b6891bf38a3df44b29d9271a7acfea03, type: 3}
-  m_PlayOnAwake: 1
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
   m_Volume: 0.5
   m_Pitch: 1
   Loop: 1
@@ -168,6 +168,8 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   currentVolume: 70
+  menuSong: {fileID: 8300000, guid: b6891bf38a3df44b29d9271a7acfea03, type: 3}
+  gameplaySong: {fileID: 8300000, guid: bc7141979e6e01d4f9915740f80d53fe, type: 3}
 --- !u!1 &2653379406792679852
 GameObject:
   m_ObjectHideFlags: 0
@@ -216,7 +218,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   originalMaterial: {fileID: 2100000, guid: ef30ae8dd4472714e8ecfbbe5f7c5fb9, type: 2}
   fadeInTime: 0.2
-  fadeOutTime: 0.7
+  fadeOutTime: 0.5
   deafultMoveRepeatRate: 0.2
   sliderMoveRepeatRate: 0.01
 --- !u!114 &5719361216656696191
@@ -310,11 +312,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioMixerGroup: {fileID: 24300002, guid: 4065331060d5d754598feb230d1e84fb, type: 2}
   currentVolume: 85
-  buttonSounds:
+  sounds:
   - {fileID: 8300000, guid: 99001d6f0f253fd40b0c768f86436b29, type: 3}
   - {fileID: 8300000, guid: e759c65f76c80834abc572593f946008, type: 3}
   - {fileID: 8300000, guid: 09f8dc09efedc414784e7ba556669245, type: 3}
   - {fileID: 8300000, guid: 2b8670b132d29984c93743808adbfcb3, type: 3}
+  - {fileID: 8300000, guid: 8b04fe71cc89e0c40b97b744228d77c2, type: 3}
+  - {fileID: 8300000, guid: 19d87e511e677074895d17fe6c0e00c8, type: 3}
+  - {fileID: 8300000, guid: bb110de40b0d0c941af41e1fa85b16d6, type: 3}
+  - {fileID: 8300000, guid: 011884aa5945e064492fd877f770bc89, type: 3}
+  - {fileID: 8300000, guid: acbb735cfb37b334eb425c27564293fe, type: 3}
   curve:
     serializedVersion: 2
     m_Curve:
@@ -444,6 +451,7 @@ MonoBehaviour:
   - {fileID: 354770336, guid: 596343eef0206764888eedf0615c7355, type: 3}
   - {fileID: -1595798593, guid: 596343eef0206764888eedf0615c7355, type: 3}
   onFullscreen: 1
+  openingAlreadyShown: 0
 --- !u!1 &9107976882186622934
 GameObject:
   m_ObjectHideFlags: 0

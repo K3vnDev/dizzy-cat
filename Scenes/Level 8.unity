@@ -12107,31 +12107,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53d02cc52013f9a4fb657cc2b93540ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  easeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  isRotating: 0
 --- !u!4 &1330328930 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4552779494213089240, guid: be58aeb78f970084ba42961786ea7981, type: 3}
@@ -12261,10 +12236,6 @@ PrefabInstance:
     - target: {fileID: 8662943031506069255, guid: a46d0d977b7e1d047b751f708ae94c82, type: 3}
       propertyPath: m_Name
       value: Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 8662943031506069370, guid: a46d0d977b7e1d047b751f708ae94c82, type: 3}
-      propertyPath: pauseMenu
-      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 8662943031506069371, guid: a46d0d977b7e1d047b751f708ae94c82, type: 3}
       propertyPath: m_RootOrder

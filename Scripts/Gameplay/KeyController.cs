@@ -5,26 +5,21 @@ using System;
 public class KeyController : MonoBehaviour, ICollectable
 {
     [SerializeField] float targetSpeed, minRotationTime;
-    [SerializeField][Range(0, 1)] float rotationTimeFactor;
 
     ParticleSystem keyParticles;
     Animator lockAnimator, animator;
     LevitateController levitateController;
     PlayerController playerController;
 
-    [Header("SFX")]
-    [SerializeField] AudioClip getKeySound;
-    [SerializeField] AudioClip openLockSound;
-
     bool alreadyCollected = false;
 
     void Start()
     {
         lockAnimator = GameObject.FindWithTag("Lock").GetComponent<Animator>();
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
 
-        keyParticles = transform.parent.GetComponentInChildren<ParticleSystem>();
-        levitateController = GetComponent<LevitateController>();
+        keyParticles = GetComponentInChildren<ParticleSystem>();
+        levitateController = GetComponentInChildren<LevitateController>();
         playerController = Utils.GetPlayer();
     }
 
@@ -34,42 +29,41 @@ public class KeyController : MonoBehaviour, ICollectable
         {
             animator.SetTrigger("enter");
             lockAnimator.SetTrigger("unlock");
-
-            SFXPlayer.I.PlaySound(openLockSound, .15f);
+            SFXPlayer.I.PlaySound(SFXPlayer.Sound.Lock, 0.15f);
         }
     }
 
     public void Collect()
     {
-        if (alreadyCollected) return;
+        if (!alreadyCollected)
+        {
+            alreadyCollected = true;
+            playerController.playerCanMove = false;
 
-        levitateController.Stop();
-        playerController.playerCanMove = false;
+            levitateController.Stop();
+            animator.SetTrigger("pick");
+            SFXPlayer.I.PlaySound(SFXPlayer.Sound.Key, 0.15f);
+            keyParticles.Stop();
 
-        animator.SetTrigger("pick");
-        keyParticles.Stop();
-        SFXPlayer.I.PlaySound(getKeySound, .15f);
-        alreadyCollected = true;
-
-        HandleMoveToLock();
+            MoveToLock();
+        }
     }
 
-    void HandleMoveToLock()
+    void MoveToLock()
     {
         Vector2 lockPosition = lockAnimator.transform.position;
         float distance = Vector2.Distance(lockPosition, transform.position);
-        float moveTime = distance / targetSpeed;
-        float rotationTime = moveTime * rotationTimeFactor;
+        float animationTime = distance / targetSpeed;
 
         transform
-            .DOMove(lockPosition, moveTime)
+            .DOMove(lockPosition, animationTime)
             .SetEase(Ease.InOutSine)
             .OnComplete(() => playerController.playerCanMove = true);
 
-        if (rotationTime < minRotationTime) return;
+        if (animationTime < minRotationTime) return;
 
-        transform.parent
-            .DORotate(Vector3.forward * 360, rotationTime, RotateMode.FastBeyond360)
+        transform
+            .DOLocalRotate(Vector3.forward * 360, animationTime, RotateMode.FastBeyond360)
             .SetEase(Ease.OutSine);
     }
 }

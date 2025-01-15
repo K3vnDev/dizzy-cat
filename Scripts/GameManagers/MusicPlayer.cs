@@ -1,6 +1,6 @@
-using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.SceneManagement;
 
 public class MusicPlayer : MonoBehaviour
 {
@@ -11,7 +11,9 @@ public class MusicPlayer : MonoBehaviour
     [SerializeField] AnimationCurve curve;
 
     public float currentVolume = 70;
-    readonly float LOW_VOLUME = 0.1f;
+    readonly float LOW_VOLUME = 0.15f;
+
+    [SerializeField] AudioClip menuSong, gameplaySong;
 
     private void Awake()
     {
@@ -28,17 +30,19 @@ public class MusicPlayer : MonoBehaviour
     private void Start()
     {
         SetVolume(currentVolume);
+        Refresh();
     }
 
-    public void Restart()
+    public void Restart() => audioSource.Play();
+
+    public void LowVolume()
     {
-        audioSource.Play();
+        audioSource.volume = LOW_VOLUME;
     }
 
-    public void LowerVolume(bool value)
+    public void DefaultVolume()
     {
-        float newVolume = value ? LOW_VOLUME : 0.5f;
-        audioSource.volume = newVolume;
+        audioSource.volume = 0.5f;
     }
 
     public void SetVolume(float value)
@@ -46,5 +50,26 @@ public class MusicPlayer : MonoBehaviour
         currentVolume = value;
         float newVolume = Utils.ParseVolume(value, curve);
         audioMixer.SetFloat("Volume", newVolume);
+    }
+
+    /// <summary>Sets the AudioSource with the assigned music for the current scene.</summary>
+    public void Refresh(bool restartOnDifferentAudioClip = true)
+    {
+        AudioClip newClip = GetSceneMusic();
+        bool onDifferentAudioClip = audioSource.clip != newClip;
+
+        DefaultVolume();
+        audioSource.clip = newClip;
+
+        if (restartOnDifferentAudioClip && onDifferentAudioClip)
+        {
+            audioSource.Play();
+        }
+    }
+
+    AudioClip GetSceneMusic()
+    {
+        bool isOnMainMenu = SceneManager.GetActiveScene().name == "MainMenu";
+        return isOnMainMenu ? menuSong : gameplaySong;
     }
 }

@@ -12076,31 +12076,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53d02cc52013f9a4fb657cc2b93540ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  easeCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  isRotating: 0
 --- !u!4 &1330328930 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4552779494213089240, guid: be58aeb78f970084ba42961786ea7981, type: 3}
@@ -12159,7 +12134,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4552779494213089243, guid: be58aeb78f970084ba42961786ea7981, type: 3}
       propertyPath: m_Name
-      value: Goal Objects
+      value: Fish
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be58aeb78f970084ba42961786ea7981, type: 3}
@@ -12229,7 +12204,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7712584609180300656, guid: 4b29727c96c4af7459b31ea25e1300ff, type: 3}
       propertyPath: m_Name
-      value: Key Objects
+      value: Key
       objectReference: {fileID: 0}
     - target: {fileID: 7712584609180300657, guid: 4b29727c96c4af7459b31ea25e1300ff, type: 3}
       propertyPath: m_RootOrder

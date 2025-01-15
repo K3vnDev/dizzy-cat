@@ -38,17 +38,18 @@ public class TransitionManager : MonoBehaviour
 
             case TMScene.CurrentLevel:
                 SceneManager.LoadScene(GameManager.I.currentLevel);
+                Cursor.visible = false;
                 break;
 
             case TMScene.NextLevel:
             {
-                int nextScene = SceneManager.GetActiveScene().buildIndex + 1;
-                GameManager.I.currentLevel = nextScene;
+                GameManager.I.currentLevel++;
+                Cursor.visible = false;
 
-                SceneManager.LoadScene(nextScene);
+                int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
+                SceneManager.LoadScene(nextSceneIndex);
                 break;
             }
-
         }
     }
 
@@ -59,6 +60,7 @@ public class TransitionManager : MonoBehaviour
             LoadScene(scene);
             return;
         }
+
         CurrentTransition = transition;
         IsTransitioning = true;
 
@@ -75,10 +77,12 @@ public class TransitionManager : MonoBehaviour
         // Fade out song and start transition animation
         float transitionInDuration = transitionerIn();
 
-        AudioSource source = MusicPlayer.I.audioSource;
-        source.DOFade(0, transitionInDuration).SetEase(Ease.InSine);
+        MusicPlayer.I.audioSource
+            .DOFade(0, transitionInDuration)
+            .SetUpdate(true)
+            .SetEase(Ease.OutCubic);
 
-        yield return new WaitForSeconds(transitionInDuration);
+        yield return new WaitForSecondsRealtime(transitionInDuration);
 
         // Disable camera rendering and load desired scene
         mainCamera.cullingMask = 0;
@@ -93,10 +97,7 @@ public class TransitionManager : MonoBehaviour
         mainCamera.cullingMask = -1;
         float transitionOutDuration = transitionerOut();
 
-        MusicPlayer.I.Restart();
-        source.volume = 0.5f;
-
-        yield return new WaitForSeconds(transitionOutDuration);
+        yield return new WaitForSecondsRealtime(transitionOutDuration);
 
         CurrentTransition = TMTransition.None;
         IsTransitioning = false;
@@ -117,16 +118,14 @@ public class TransitionManager : MonoBehaviour
     {
         mainCamera = GameObject.FindWithTag("MainCamera").GetComponent<Camera>();
         lensCircle = GameObject.FindWithTag("LensCircle").GetComponent<LensCircleController>();
-
-        PauseMenuController pauseMenu = GameObject
-            .FindWithTag("Pause Menu")?.GetComponent<PauseMenuController>();
-
-        if ( pauseMenu != null ) pauseMenu.gameCanBePaused = !IsTransitioning;
     }
 
     private void OnLoadNewScene(Scene scene, LoadSceneMode sceneMode)
     {
         RefreshValues();
+
+        Time.timeScale = 1f;
+        MusicPlayer.I.Refresh();
 
         if (CurrentTransition != TMTransition.None)
         {

@@ -22,12 +22,12 @@ public class InputManager : MonoBehaviour
         public GameActions(Controls.GameActions gameActions)
         {
             Pause = gameActions.Pause;
+            Pause.Enable();
         }
 
         public void SetRotateDirection(float rotateDirection)
         {
-            if (rotateDirection == 0) RotateDirection = rotateDirection;
-            else RotateDirection = Mathf.Sign(rotateDirection);
+            RotateDirection = rotateDirection;
         }
     }
 
@@ -51,8 +51,8 @@ public class InputManager : MonoBehaviour
 
     void HandleGameActions()
     {
-        float rotateDirection = controls.Game.Rotate.ReadValue<Vector2>().x;
-        Game.SetRotateDirection(rotateDirection);
+        Vector2 parsedInput = Utils.ParseRawInput(controls.Game.Rotate.ReadValue<Vector2>());
+        Game.SetRotateDirection(parsedInput.x);
     }
 
     void Update()

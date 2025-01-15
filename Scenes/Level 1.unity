@@ -11563,7 +11563,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53d02cc52013f9a4fb657cc2b93540ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isRotating: 0
 --- !u!1001 &1325699971
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11731,7 +11730,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4552779494213089243, guid: be58aeb78f970084ba42961786ea7981, type: 3}
       propertyPath: m_Name
-      value: Goal Objects
+      value: Fish
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: be58aeb78f970084ba42961786ea7981, type: 3}

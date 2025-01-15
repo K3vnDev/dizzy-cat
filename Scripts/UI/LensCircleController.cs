@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class LensCircleController : MonoBehaviour
 {
     Material material;
-    [SerializeField][Range (0, 3)] float transitionInTime, transitionOutTime;
+    [SerializeField][Range (0, 3)] float transitionInTime = 0.6f, transitionOutTime = 0.3f;
     readonly string RADIUS = "_Radius";
 
     private void Awake()
@@ -18,15 +18,24 @@ public class LensCircleController : MonoBehaviour
         material.SetFloat(RADIUS, radius);
     }
 
+    public float TransitionIn(float t)
+    {
+        Transitionate(1, 0, t, Ease.OutCubic);
+        return t;
+    }
     public float TransitionIn()
     {
-        Transitionate(1, 0, transitionInTime, Ease.OutCubic);
-        return transitionInTime;
+        return TransitionIn(transitionInTime);
+    }
+
+    public float TransitionOut(float t)
+    {
+        Transitionate(0, 1, t, Ease.OutSine);
+        return t;
     }
     public float TransitionOut()
     {
-        Transitionate(0, 1, transitionOutTime, Ease.OutSine);
-        return transitionOutTime;
+        return TransitionOut(transitionOutTime);
     }
 
     void Transitionate(float startRadius, float targetRadius, float time, Ease easing)
@@ -34,6 +43,9 @@ public class LensCircleController : MonoBehaviour
         SetRadius(startRadius);
         material.DOKill();
 
-        material.DOFloat(targetRadius, RADIUS, time).SetEase(easing);
+        material
+            .DOFloat(targetRadius, RADIUS, time)
+            .SetUpdate(true)
+            .SetEase(easing);
     }
 }

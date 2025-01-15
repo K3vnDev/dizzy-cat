@@ -8,17 +8,17 @@ using UnityEngine.UI;
 public class NavigationSystem : MonoBehaviour
 {
     public static NavigationSystem I;
-    public enum SetMaterial { Navigating, Always, Never }
+    public enum MaterialMode { Navigating, Always, Never }
 
     NavigationTarget[] targets;
     public NavigationTarget CurrentSelected { get; private set; }
+    NavigationTarget defaultSelected;
 
     public bool IsNavigating { get; private set; } = false;
     [SerializeField] Material originalMaterial;
 
-    [Header("Animation")]
+    [Header("Material Animation")]
     [SerializeField][Range(0, 2)] float fadeInTime = 0.3f;
-    [SerializeField][Range(0, 2)] float fadeOutTime = 0.9f;
 
     [Header ("Move Repeat")]
     [SerializeField][Range (0, 2)] float deafultMoveRepeatRate = 0.2f;
@@ -26,24 +26,24 @@ public class NavigationSystem : MonoBehaviour
 
     float rateTimer = 0f;
 
-    readonly string OPACITY_NAME = "_Opacity", FADE_OUT_ID = "unset-mat";
+    readonly string OPACITY_NAME = "_Opacity";
 
     void Awake()
     {
         if (I != null && I != this)
         {
-            Destroy(this);
+            Destroy(gameObject);
             return;
         }
         I = this;
     }
 
-    private void Update()
+    void Update()
     {
-        if (CurrentSelected == null && InputManager.I.SelectedMap != IMActionMap.UI) return;
+        if (NotAbleToNavigate()) return;
 
-        Vector2 dir = InputManager.I.UI.Navigate.ReadValue<Vector2>();
-        bool onXAxis = Mathf.Abs(dir.x) > Mathf.Abs(dir.y);
+        Vector2 dir = Utils.ParseRawInput(InputManager.I.UI.Navigate.ReadValue<Vector2>());
+        bool onXAxis = dir.x != 0 && dir.y == 0;
 
         float moveRepeatRate = CurrentSelected.type == NTType.Slider && onXAxis
             ? sliderMoveRepeatRate : deafultMoveRepeatRate;
@@ -57,6 +57,62 @@ public class NavigationSystem : MonoBehaviour
         {
             rateTimer -= Time.unscaledDeltaTime;
         }
+    }
+
+    /// <summary>Initializes the NavigationSystem layout and calculates all NavigationTargets neighbours</summary>
+    public void Initialize(GameObject inputsContainer, NavigationTarget firstSelected)
+    {
+        targets = inputsContainer
+            .GetComponentsInChildren<NavigationTarget>();
+
+        StartCoroutine(HandleInitialize(inputsContainer, firstSelected));
+    }
+
+    // Waits for the UI to rebuild before calculating the NavigationTargets neighbours
+    IEnumerator HandleInitialize(GameObject inputsContainer, NavigationTarget firstSelected)
+    {
+        RectTransform rectTransform = inputsContainer.GetComponent<RectTransform>();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
+
+        yield return null;
+
+        foreach (NavigationTarget target in targets)
+            target.neighbours.Calculate(targets);
+
+        Refresh(inputsContainer, firstSelected);
+    }
+
+    /// <summary>Refreshes the assumed already calculated NavigationSystem layout.</summary>
+    public void Refresh(GameObject inputsContainer, NavigationTarget selectTarget = null)
+    {
+        targets = inputsContainer
+            .GetComponentsInChildren<NavigationTarget>();
+
+        if (selectTarget != null)
+        {
+            Select(selectTarget);
+            defaultSelected = selectTarget;
+        }
+    }
+
+    /// <summary>Forces the select of a given NavigationTarget.</summary>
+    public void Select(NavigationTarget target, MaterialMode setMaterial = MaterialMode.Navigating, bool onlyIfNavigating = false)
+    {
+        if (onlyIfNavigating && !IsNavigating) return;
+
+        Unselect();
+        CurrentSelected = target;
+
+        if (setMaterial == MaterialMode.Always || (setMaterial == MaterialMode.Navigating && IsNavigating))
+        {
+            SetTheMaterialOf(CurrentSelected);
+        }
+    }
+
+    /// <summary>Unselects the material of the selected NavigationTarget.</summary>
+    public void Unselect()
+    {
+        UnSetTheMaterialOf(CurrentSelected);
     }
 
     void HandleNavigate(Vector2 dir, bool onXAxis)
@@ -92,62 +148,21 @@ public class NavigationSystem : MonoBehaviour
         }
     }
 
-    /// <summary>Initializes the NavigationSystem layout and calculates all NavigationTargets neighbours</summary>
-    public void Initialize(GameObject inputsContainer, NavigationTarget firstSelected)
-    {
-        Refresh(inputsContainer, firstSelected);
-        StartCoroutine(HandleInitialize(inputsContainer));
-    }
-
-    // Waits for the UI to rebuild before calculating the NavigationTargets neighbours
-    private IEnumerator HandleInitialize(GameObject obj)
-    {
-        var rectTransform = obj.GetComponent<RectTransform>();
-        LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
-
-        yield return null;
-
-        foreach (NavigationTarget target in targets)
-            target.neighbours.Calculate(targets);
-    }
-
-    /// <summary>Refreshes the assumed already calculated NavigationSystem layout</summary>
-    public void Refresh(GameObject inputsContainer, NavigationTarget selectTarget = null)
-    {
-        targets = inputsContainer
-            .GetComponentsInChildren<NavigationTarget>();
-
-        if (selectTarget != null) CurrentSelected = selectTarget;
-
-        if (IsNavigating) StartNavigating();
-    }
-
-    /// <summary>Unselects the material of the selected target</summary>
-    public void Unselect()
-    {
-        UnSetMaterialOf(CurrentSelected);
-    }
-
-    /// <summary>Forces the select of a given target</summary>
-    public void Select(NavigationTarget target, SetMaterial setMaterial = SetMaterial.Navigating, bool onlyIfNavigating = false)
-    {
-        if (onlyIfNavigating && !IsNavigating) return;
-
-        Unselect();
-        CurrentSelected = target;
-
-        if (setMaterial == SetMaterial.Always || (setMaterial == SetMaterial.Navigating && IsNavigating))
-        {
-            SetMaterialOf(CurrentSelected);
-        }
-    }
-
     public void StartNavigating(bool onlyIfNotNavigating = false)
     {
-        if (onlyIfNotNavigating && IsNavigating) return;
-
-        IsNavigating = true;
-        SetMaterialOf(CurrentSelected);
+        if (!onlyIfNotNavigating || !IsNavigating)
+        {
+            if (CurrentSelected != null)
+            {
+                IsNavigating = true;
+                SetTheMaterialOf(CurrentSelected);
+                Cursor.visible = false;
+            }
+            else if (defaultSelected != null)
+            {
+                Select(defaultSelected);
+            }
+        }
     }
 
     public void StopNavigating()
@@ -155,66 +170,60 @@ public class NavigationSystem : MonoBehaviour
         if (!IsNavigating) return;
 
         IsNavigating = false;
-        UnSetMaterialOf(CurrentSelected, true);
+        Unselect();
+        Cursor.visible = true;
     }
 
     void Navigate(NavigationTarget target)
     {
-        if (target == null) return;
+        if (target == null || !target.isActiveAndEnabled || NotAbleToNavigate()) return;
 
-        UnSetMaterialOf(CurrentSelected);
-        SetMaterialOf(target);
-
-        CurrentSelected = target;
+        Select(target, MaterialMode.Always);
     }
 
-    private void OnEnable()
+    bool NotAbleToNavigate()
     {
-        InputManager.I.UI.Accept.performed += HandleUIAccept;
-        InputManager.I.UI.Click.performed += HandleUIClick;
-        InputManager.I.UI.Exit.performed += HandleUIExit;
+        return CurrentSelected == null || InputManager.I.SelectedMap != IMActionMap.UI || TransitionManager.I.IsTransitioning;
     }
 
-    private void OnDisable()
+    void HandleUIAccept(InputAction.CallbackContext _)
     {
-        InputManager.I.UI.Accept.performed -= HandleUIAccept;
-        InputManager.I.UI.Click.performed -= HandleUIClick;
-        InputManager.I.UI.Exit.performed -= HandleUIExit;
-    }
-
-    private void HandleUIAccept(InputAction.CallbackContext _)
-    {
-        if (CurrentSelected == null) return;
+        if (NotAbleToNavigate()) return;
 
         if (!IsNavigating)
         {
-            StartNavigating();
+            StartNavigating(true);
             return;
         }
 
         CurrentSelected.Trigger();
     }
 
-    private void HandleUIClick(InputAction.CallbackContext _)
+    void HandleUIClick(InputAction.CallbackContext _)
     {
-        if (CurrentSelected == null) return;
+        if (NotAbleToNavigate()) return;
 
         StopNavigating();
     }
 
-    private void HandleUIExit(InputAction.CallbackContext _)
+    void HandleUIExit(InputAction.CallbackContext _)
     {
+        if (NotAbleToNavigate()) return;
+
         StartNavigating(true);
     }
 
-    void SetMaterialOf(NavigationTarget target)
+    void SetTheMaterialOf(NavigationTarget target)
     {
+        if (target == null || target.graphs == null) return;
+
         Graphic[] graphs = target.graphs;
 
         foreach (Graphic graph in graphs)
         {
+            if (graph == null) continue;
+
             graph.material = Instantiate(originalMaterial);
-            graph.material.DOKill();
 
             graph.material
                 .DOFloat(1f, OPACITY_NAME, fadeInTime)
@@ -223,28 +232,32 @@ public class NavigationSystem : MonoBehaviour
         }
     }
 
-    void UnSetMaterialOf(NavigationTarget target, bool withTransition = false)
+    void UnSetTheMaterialOf(NavigationTarget target)
     {
+        if (target == null || !target.isActiveAndEnabled || target.graphs == null) return;
+
         Graphic[] graphs = target.graphs;
 
         foreach (Graphic graph in graphs)
         {
             if (graph.material == null) continue;
 
-            if (DOTween.IsTweening(FADE_OUT_ID) || !withTransition)
-            {
-                DOTween.Kill(FADE_OUT_ID);
-                graph.material.DOKill();
-                graph.material = null;
-                continue;
-            }
-
-            graph.material
-                .DOFloat(0f, OPACITY_NAME, fadeOutTime)
-                .SetEase(Ease.InSine)
-                .SetId(FADE_OUT_ID)
-                .SetUpdate(true)
-                .OnComplete(() => graph.material = null);
+            graph.material.DOKill();
+            graph.material = null;
         }
+    }
+
+    void OnEnable()
+    {
+        InputManager.I.UI.Accept.performed += HandleUIAccept;
+        InputManager.I.UI.Click.performed += HandleUIClick;
+        InputManager.I.UI.Exit.performed += HandleUIExit;
+    }
+
+    void OnDisable()
+    {
+        InputManager.I.UI.Accept.performed -= HandleUIAccept;
+        InputManager.I.UI.Click.performed -= HandleUIClick;
+        InputManager.I.UI.Exit.performed -= HandleUIExit;
     }
 }

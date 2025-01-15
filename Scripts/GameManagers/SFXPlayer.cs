@@ -8,8 +8,8 @@ public class SFXPlayer : MonoBehaviour
     [SerializeField] AudioMixerGroup audioMixerGroup;
     public float currentVolume = 85;
 
-    [SerializeField] AudioClip[] buttonSounds = new AudioClip[4];
-    public enum ButtonSound { Enter, Exit, Select, Play }
+    [SerializeField] AudioClip[] sounds;
+    public enum Sound { Enter, Exit, Select, Play, Rotate, Meow, Eating, Key, Lock }
     [SerializeField] AnimationCurve curve;
 
     private void Awake()
@@ -52,9 +52,9 @@ public class SFXPlayer : MonoBehaviour
         Destroy(audioSource, sound.length / randomPitch);
     }
 
-    public void PlaySound(ButtonSound sound, float pitchRange = 0)
+    public void PlaySound(Sound sound, float pitchRange = 0)
     {
-        AudioClip selectedSound = buttonSounds[(int) sound];
+        AudioClip selectedSound = sounds[(int) sound];
         PlaySound(selectedSound, pitchRange);
     }
 }

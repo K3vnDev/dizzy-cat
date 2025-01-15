@@ -40,7 +40,7 @@ public class ButtonsController : MonoBehaviour,
     
     public void OnPointerEnter(PointerEventData e)
     {
-        if (IsDisabled()) return;
+        if (IsDisabled() || !Cursor.visible) return;
 
         ScaleTo(HOVERING_SCALE);
         pointerIsHovering = true;
@@ -83,9 +83,9 @@ public class ButtonsController : MonoBehaviour,
 
             if (pauseMenu != null) isDisabledInGame = !pauseMenu.GameIsPaused;
         }
-        return 
-            TransitionManager.I.IsTransitioning 
-            || behavior == Behavior.Disabled 
+        return
+            TransitionManager.I.IsTransitioning
+            || behavior == Behavior.Disabled
             || isDisabledInGame;
     }
 

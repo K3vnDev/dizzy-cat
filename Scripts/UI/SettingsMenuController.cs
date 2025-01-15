@@ -29,7 +29,10 @@ public class SettingsMenuController : MonoBehaviour
         ChangeSFXVolume(SFXPlayer.I.currentVolume);
 
         fullscreen_toggle.isOn = GameManager.I.onFullscreen;
+    }
 
+    private void Awake()
+    {
         NavigationSystem.I.Initialize(gameObject, firstSelected);
     }
 
@@ -40,10 +43,10 @@ public class SettingsMenuController : MonoBehaviour
 
     public void OkayButton()
     {
-        SFXPlayer.I.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
-        NavigationSystem.I.Select(settingsButton, onlyIfNavigating: true);
+        SFXPlayer.I.PlaySound(SFXPlayer.Sound.Exit, 0.1f);
+        NavigationSystem.I.Select(settingsButton);
 
-        SwapMenuManager.I.ToMain();
+        SwapMenuManager.I.SwapMenu(SwapMenuManager.Menu.Main);
     }
 
     public void ChangeMusicVolume(float vol)

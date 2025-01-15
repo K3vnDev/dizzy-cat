@@ -29,9 +29,24 @@ public static class Utils
         throw new Exception($"Volume was outside bounds. Value recieved: {volume}");
     }
 
-    /// <summary> Gets a PlayerComponent reference using the tag "Player". </summary>
+    /// <summary> Finds a PlayerComponent reference in the current scene. </summary>
     public static PlayerController GetPlayer()
     {
         return GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+    }
+
+    /// <summary> 
+    /// Parses a raw input value into a controlled one with a threshold. <br/>
+    /// Each axis of the returned Vector2 can be either 1, 0 or -1.
+    /// </summary>
+    public static Vector2 ParseRawInput(Vector2 rawInput, float threshold = 0.75f)
+    {
+        float ParseRawAxis(float value)
+        {
+            if (Mathf.Abs(value) < threshold) return 0;
+
+            return Mathf.Sign(value);
+        }
+        return new Vector2(ParseRawAxis(rawInput.x), ParseRawAxis(rawInput.y));
     }
 }

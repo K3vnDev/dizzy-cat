@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-[ExecuteInEditMode]
 public class SwapMenuManager : MonoBehaviour
 {
     public enum Menu { Main, Skins, Settings }
@@ -31,37 +30,13 @@ public class SwapMenuManager : MonoBehaviour
         InputManager.I.UseActionMap(IMActionMap.UI);
     }
 
-    void HandleCurrentMenu()
+    public void SwapMenu(Menu menu)
     {
+        currentMenu = menu;
+        backgroundController.SetIsOnGrayBackground(menu != Menu.Main);
+
         for (int i = 0; i < orderedMenus.Length; i++)
-        {
-            bool isSelected = (int) currentMenu == i;
-            orderedMenus[i].SetActive(isSelected);
-
-        }
-    }
-
-    public void ToMain ()
-    {
-        currentMenu = Menu.Main;
-        backgroundController.SetIsOnGrayBackground(false);
-    }
-
-    public void ToSkins()
-    {
-        currentMenu = Menu.Skins;
-        backgroundController.SetIsOnGrayBackground(true);
-    }
-
-    public void ToSettings()
-    {
-        currentMenu = Menu.Settings;
-        backgroundController.SetIsOnGrayBackground(true);
-    }
-
-    void Update()
-    {
-        HandleCurrentMenu();
+            orderedMenus[i].SetActive((int) menu == i);
     }
 
     private void OnEnable()
@@ -80,7 +55,7 @@ public class SwapMenuManager : MonoBehaviour
     {
         if (currentMenu == Menu.Main) return;
 
-        SFXPlayer.I.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
+        SFXPlayer.I.PlaySound(SFXPlayer.Sound.Exit, 0.1f);
         backgroundController.SetIsOnGrayBackground(false);
 
         orderedExitButtons[(int) currentMenu - 1].Trigger();

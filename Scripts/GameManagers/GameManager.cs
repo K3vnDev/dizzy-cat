@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour
     [Header ("Settings")]
     public bool onFullscreen = true;
 
+    public bool openingAlreadyShown = false;
+
     private void Awake()
     {
         if (I != null && I != this)

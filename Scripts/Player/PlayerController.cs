@@ -15,12 +15,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject playerParticles;
     public bool playerCanMove = true;
 
-    [Header("SFX")]
-    [SerializeField] AudioClip getFishSound;
-    [SerializeField] AudioClip errorSound;
-    [SerializeField] AudioClip rotateSound;
-    [SerializeField] AudioClip catMeowSound;
-
     [Space]
 
     [HideInInspector] public Rigidbody2D rb;
@@ -87,14 +81,14 @@ public class PlayerController : MonoBehaviour
             HandleRotate();
         }
 
-        if (scenarioController.isRotating)
+        if (scenarioController.IsRotating)
         {
             rb.velocity = Vector2.zero;
             rb.gravityScale = 0;
         }
         else rb.gravityScale = initialGravity;
 
-        isFalling = !scenarioController.isRotating && !isGrounded;
+        isFalling = !scenarioController.IsRotating && !isGrounded;
 
         CircleCollidersLogic();
     }
@@ -103,10 +97,9 @@ public class PlayerController : MonoBehaviour
     {
         float newHorizontalAxis = PeekInputBuffer();
 
-        if (!scenarioController.isRotating && playerCanMove && newHorizontalAxis != 0)
+        if (!scenarioController.IsRotating && playerCanMove && newHorizontalAxis != 0)
         {
             scenarioController.Rotate(newHorizontalAxis);
-            SFXPlayer.I.PlaySound(rotateSound, .2f);
             inputBuffer.Clear();
         }
         else if (!playerCanMove && horizontalAxis != 0 && !levelCompleted)
@@ -144,11 +137,11 @@ public class PlayerController : MonoBehaviour
 
     void HandleCatSound()
     {
-        if (isGrounded && !scenarioController.isRotating)
+        if (isGrounded && !scenarioController.IsRotating)
         {
             if (ignoreCatSoundsLeft <= 0 && playerCanMove && !levelCompleted)
             {
-                SFXPlayer.I.PlaySound(catMeowSound, 0.25f);
+                SFXPlayer.I.PlaySound(SFXPlayer.Sound.Meow, 0.25f);
                 ignoreCatSoundsLeft = Random.Range(4, 10);
                 return;
             }

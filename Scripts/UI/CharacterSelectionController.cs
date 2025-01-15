@@ -33,24 +33,22 @@ public class CharacterSelectionController : MonoBehaviour
 
     public void SwapCharacter(int characterIndex)
     {
-        SFXPlayer.I.PlaySound(SFXPlayer.ButtonSound.Select, .1f);
+        SFXPlayer.I.PlaySound(SFXPlayer.Sound.Select, .1f);
         GameManager.I.selectedCharacter = characterIndex;
         UpdateSelectorPosition();
 
         if (!NavigationSystem.I.IsNavigating)
         {
-            NavigationSystem.I.Select(GetTarget(), NavigationSystem.SetMaterial.Never);
+            NavigationSystem.I.Select(GetTarget(), NavigationSystem.MaterialMode.Never);
         }
     }
 
     public void OkayButton()
     {
-        okayButton.transform.localScale = Vector2.one;
+        SFXPlayer.I.PlaySound(SFXPlayer.Sound.Exit, 0.1f);
+        NavigationSystem.I.Select(skinsButton);
 
-        SFXPlayer.I.PlaySound(SFXPlayer.ButtonSound.Exit, .1f);
-        NavigationSystem.I.Select(skinsButton, onlyIfNavigating: true);
-
-        SwapMenuManager.I.ToMain();
+        SwapMenuManager.I.SwapMenu(SwapMenuManager.Menu.Main);
     }
 
     private void UpdateSelectorPosition()
