@@ -71,8 +71,10 @@ public class NavigationSystem : MonoBehaviour
     // Waits for the UI to rebuild before calculating the NavigationTargets neighbours
     IEnumerator HandleInitialize(GameObject inputsContainer, NavigationTarget firstSelected)
     {
-        RectTransform rectTransform = inputsContainer.GetComponent<RectTransform>();
-        LayoutRebuilder.ForceRebuildLayoutImmediate(rectTransform);
+        RectTransform[] rectTransform = inputsContainer.GetComponentsInChildren<RectTransform>();
+
+        foreach (RectTransform rect in rectTransform)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
 
         yield return null;
 
@@ -156,7 +158,7 @@ public class NavigationSystem : MonoBehaviour
             {
                 IsNavigating = true;
                 SetTheMaterialOf(CurrentSelected);
-                Cursor.visible = false;
+                //Cursor.visible = false;
             }
             else if (defaultSelected != null)
             {
@@ -171,7 +173,7 @@ public class NavigationSystem : MonoBehaviour
 
         IsNavigating = false;
         Unselect();
-        Cursor.visible = true;
+        //Cursor.visible = true;
     }
 
     void Navigate(NavigationTarget target)

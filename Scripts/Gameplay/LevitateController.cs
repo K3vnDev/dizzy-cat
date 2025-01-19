@@ -8,10 +8,12 @@ public class LevitateController : MonoBehaviour
 
     void Start()
     {
-        transform.DOLocalMoveY(range / 2, 0);
+        float moveY = range / 2;
+
+        transform.DOLocalMoveY(moveY, 0);
 
         transform
-            .DOLocalMoveY(-range, period / 4)
+            .DOLocalMoveY(-moveY, period / 4)
             .SetEase(Ease.InOutQuad)
             .SetLoops(-1, LoopType.Yoyo);
     }

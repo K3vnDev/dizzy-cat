@@ -14,19 +14,8 @@ public class MainMenuController : MonoBehaviour
     private void Awake()
     {
         NavigationSystem.I.Initialize(gameObject, initialTarget);
-    }
 
-    private void Start()
-    {
-        lensCircle = GameObject.FindWithTag("LensCircle").GetComponent<LensCircleController>();
-
-        if (!TransitionManager.I.IsTransitioning && !GameManager.I.openingAlreadyShown)
-        {
-            GameManager.I.openingAlreadyShown = true;
-
-            lensCircle.SetRadius(0);
-            lensCircle.TransitionOut(0.8f);
-        }
+        HandleInitialAnimation();
     }
 
     private void OnEnable()
@@ -56,5 +45,20 @@ public class MainMenuController : MonoBehaviour
     {
         SFXPlayer.I.PlaySound(SFXPlayer.Sound.Exit, .1f);
         Application.Quit();
+    }
+
+
+    public void HandleInitialAnimation()
+    {
+        lensCircle = GameObject.FindWithTag("LensCircle")
+            .GetComponent<LensCircleController>();
+
+        if (!TransitionManager.I.IsTransitioning && !GameManager.I.openingAlreadyShown)
+        {
+            GameManager.I.openingAlreadyShown = true;
+
+            lensCircle.SetRadius(0);
+            lensCircle.TransitionOut(0.8f);
+        }
     }
 }

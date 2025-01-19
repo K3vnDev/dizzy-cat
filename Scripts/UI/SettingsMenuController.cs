@@ -28,7 +28,10 @@ public class SettingsMenuController : MonoBehaviour
         ChangeMusicVolume(MusicPlayer.I.currentVolume);
         ChangeSFXVolume(SFXPlayer.I.currentVolume);
 
-        fullscreen_toggle.isOn = GameManager.I.onFullscreen;
+        bool fullscreen = Screen.fullScreen;
+
+        GameManager.I.IsOnFullscreen = fullscreen;
+        fullscreen_toggle.isOn = fullscreen;
     }
 
     private void Awake()
@@ -51,10 +54,9 @@ public class SettingsMenuController : MonoBehaviour
 
     public void ChangeMusicVolume(float vol)
     {
-        MusicPlayer.I.SetVolume(vol);
+        MusicPlayer.I.SetVolume((int) vol);
         music_voltext.text = vol.ToString();
 
-        MusicPlayer.I.currentVolume = vol;
         PlaySliderSound();
 
         music_slider.value = vol;
@@ -62,7 +64,7 @@ public class SettingsMenuController : MonoBehaviour
 
     public void ChangeSFXVolume(float vol)
     {
-        SFXPlayer.I.SetVolume(vol);
+        SFXPlayer.I.SetVolume((int) vol);
         sfx_voltext.text = vol.ToString();
 
         PlaySliderSound();
@@ -82,9 +84,9 @@ public class SettingsMenuController : MonoBehaviour
     public void SetFullscreen(bool fullscreen)
     {
         Screen.fullScreen = fullscreen;
-        SFXPlayer.I.PlaySound(
-            fullscreen ? fs_sound1 : fs_sound2, .1f);
+        GameManager.I.IsOnFullscreen = fullscreen;
 
-        GameManager.I.onFullscreen = fullscreen;
+        AudioClip sfx = fullscreen ? fs_sound1 : fs_sound2;
+        SFXPlayer.I.PlaySound(sfx, .1f);
     }
 }

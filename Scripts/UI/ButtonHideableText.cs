@@ -24,7 +24,7 @@ public class ButtonHideableText : MonoBehaviour
     float initialPosition, extendedPosition;
     bool isHiding = true;
 
-    private void Awake()
+    private void Start()
     {
         rectTransform = GetComponent<RectTransform>();
 
@@ -48,10 +48,7 @@ public class ButtonHideableText : MonoBehaviour
         // Set extended position
         float textHeight = hideableText.GetComponent<RectTransform>().rect.height * canvasScale;
         extendedPosition = initialPosition - (gap * canvasScale) - (textHeight / 2);
-    }
 
-    private void Start()
-    {
         textMeshPro = hideableText.GetComponent<TextMeshProUGUI>();
         textMeshPro.text = GetParsedTextContent();
     }
@@ -61,7 +58,7 @@ public class ButtonHideableText : MonoBehaviour
         bool isSelectedByNavigation = NavigationSystem.I.CurrentSelected == navigationTarget 
             && NavigationSystem.I.IsNavigating;
 
-        SetIsHiding(!isSelectedByNavigation && !buttonController.pointerIsHovering);
+        SetIsHiding(!isSelectedByNavigation && !buttonController.PointerIsHovering);
     }
 
     void SetIsHiding(bool hide)
@@ -69,17 +66,23 @@ public class ButtonHideableText : MonoBehaviour
         if (hide && !isHiding)
         {
             isHiding = true;
-
-            hideableText.transform.DOKill();
-            hideableText.transform.DOMoveY(initialPosition, moveTime).SetEase(Ease.InCubic);
+            MoveTo(initialPosition, Ease.InCubic);
         }
         else if (!hide && isHiding)
         {
             isHiding = false;
-
-            hideableText.transform.DOKill();
-            hideableText.transform.DOMoveY(extendedPosition, moveTime).SetEase(Ease.OutBack);
+            MoveTo(extendedPosition, Ease.OutBack);
         }
+    }
+
+    void MoveTo(float position, Ease ease)
+    {
+        hideableText.transform.DOKill();
+
+        hideableText.transform
+            .DOMoveY(position, moveTime)
+            .SetUpdate(true)
+            .SetEase(ease);
     }
 
     string GetParsedTextContent()

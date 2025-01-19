@@ -38,13 +38,13 @@ public class TransitionManager : MonoBehaviour
 
             case TMScene.CurrentLevel:
                 SceneManager.LoadScene(GameManager.I.currentLevel);
-                Cursor.visible = false;
+                //Cursor.visible = false;
                 break;
 
             case TMScene.NextLevel:
             {
                 GameManager.I.currentLevel++;
-                Cursor.visible = false;
+                //Cursor.visible = false;
 
                 int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
                 SceneManager.LoadScene(nextSceneIndex);
@@ -77,32 +77,24 @@ public class TransitionManager : MonoBehaviour
         // Fade out song and start transition animation
         float transitionInDuration = transitionerIn();
 
-        MusicPlayer.I.audioSource
-            .DOFade(0, transitionInDuration)
-            .SetUpdate(true)
-            .SetEase(Ease.OutCubic);
+        MusicPlayer.I.SetSourceVolume(0, transitionInDuration, Ease.OutCubic);
 
         yield return new WaitForSecondsRealtime(transitionInDuration);
 
         // Disable camera rendering and load desired scene
-        mainCamera.cullingMask = 0;
+        mainCamera.enabled = false;
         LoadScene(scene);
 
         yield return new WaitUntil(() => hasJustChangedScene);
         hasJustChangedScene = false;
 
-        RefreshValues();
-
         // Fade in song and end transition animation
-        mainCamera.cullingMask = -1;
         float transitionOutDuration = transitionerOut();
 
         yield return new WaitForSecondsRealtime(transitionOutDuration);
 
         CurrentTransition = TMTransition.None;
         IsTransitioning = false;
-
-        RefreshValues();
     }
 
     private void OnEnable()
@@ -130,6 +122,7 @@ public class TransitionManager : MonoBehaviour
         if (CurrentTransition != TMTransition.None)
         {
             hasJustChangedScene = true;
+            mainCamera.enabled = true;
         }
     }
 }

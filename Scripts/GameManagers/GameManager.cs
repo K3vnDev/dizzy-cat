@@ -11,7 +11,8 @@ public class GameManager : MonoBehaviour
     public Sprite[] characterSprites;
 
     [Header ("Settings")]
-    public bool onFullscreen = true;
+    public bool IsOnFullscreen = true;
+    public AnimationCurve soundCurve;
 
     public bool openingAlreadyShown = false;
 

@@ -4,10 +4,10 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ButtonsController : MonoBehaviour,
+public class ButtonsController : MonoBehaviour, 
     IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, IPointerClickHandler
 {
-    public bool pointerIsHovering = false;
+    public bool PointerIsHovering { get; private set; } = false;
 
     public enum Behavior { Default, Disabled, DisabledInGame }
     public Behavior behavior = Behavior.Default;
@@ -15,7 +15,7 @@ public class ButtonsController : MonoBehaviour,
     [SerializeField] UnityEvent onClick;
 
     readonly Vector2 HOVERING_SCALE = Vector2.one * 1.05f,
-        PRESSED_SCALE = Vector2.one * 0.95f;
+        PRESSED_SCALE = Vector2.one * 0.9f;
 
     readonly float ANIM_TIME = 0.3f;
 
@@ -38,34 +38,34 @@ public class ButtonsController : MonoBehaviour,
             .SetUpdate(true);
     }
     
-    public void OnPointerEnter(PointerEventData e)
+    public void OnPointerEnter(PointerEventData _)
     {
         if (IsDisabled() || !Cursor.visible) return;
 
         ScaleTo(HOVERING_SCALE);
-        pointerIsHovering = true;
+        PointerIsHovering = true;
     }
 
-    public void OnPointerExit(PointerEventData e)
+    public void OnPointerExit(PointerEventData _)
     {
         ScaleTo(Vector2.one);
-        pointerIsHovering = false;
+        PointerIsHovering = false;
     }
 
-    public void OnPointerDown(PointerEventData e)
+    public void OnPointerDown(PointerEventData _)
     {
         if (IsDisabled()) return;
 
         ScaleTo(PRESSED_SCALE);
     }
 
-    public void OnPointerUp(PointerEventData e)
+    public void OnPointerUp(PointerEventData _)
     {
-        if (pointerIsHovering) ScaleTo(HOVERING_SCALE);
+        if (PointerIsHovering) ScaleTo(HOVERING_SCALE);
         else ScaleTo(Vector2.one);
     }
 
-    public void OnPointerClick(PointerEventData e)
+    public void OnPointerClick(PointerEventData _)
     {
         if (IsDisabled()) return;
 
@@ -81,8 +81,12 @@ public class ButtonsController : MonoBehaviour,
             PauseMenuController pauseMenu = GameObject.FindWithTag("Pause Menu")
                 ?.GetComponent<PauseMenuController>();
 
-            if (pauseMenu != null) isDisabledInGame = !pauseMenu.GameIsPaused;
+            if (pauseMenu != null)
+            {
+                isDisabledInGame = !pauseMenu.GameIsPaused;
+            }
         }
+
         return
             TransitionManager.I.IsTransitioning
             || behavior == Behavior.Disabled

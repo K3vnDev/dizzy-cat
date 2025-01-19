@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
@@ -7,13 +8,16 @@ public class MusicPlayer : MonoBehaviour
     public static MusicPlayer I;
     [HideInInspector] public AudioSource audioSource;
 
+    [Range (0, 100)] public int currentVolume = 70;
     public AudioMixer audioMixer;
-    [SerializeField] AnimationCurve curve;
 
-    public float currentVolume = 70;
-    readonly float LOW_VOLUME = 0.15f;
+    [Header ("Songs")]
+    [SerializeField] AudioClip menuSong;
+    [SerializeField] AudioClip gameplaySong;
 
-    [SerializeField] AudioClip menuSong, gameplaySong;
+    [Header ("Low Volume")]
+    [SerializeField][Range (0, 0.5f)] float lowVolume = 0.15f;
+    [SerializeField] float volumeFadeTime = 0.3f;
 
     private void Awake()
     {
@@ -35,20 +39,32 @@ public class MusicPlayer : MonoBehaviour
 
     public void Restart() => audioSource.Play();
 
-    public void LowVolume()
+    public void LowSourceVolume()
     {
-        audioSource.volume = LOW_VOLUME;
+        SetSourceVolume(lowVolume, volumeFadeTime, Ease.OutQuart);
     }
 
-    public void DefaultVolume()
+    public void DefaultSourceVolume()
     {
-        audioSource.volume = 0.5f;
+        SetSourceVolume(0.5f, volumeFadeTime, Ease.OutQuart);
     }
 
-    public void SetVolume(float value)
+    public void SetSourceVolume(float value, float time = 0, Ease easing = Ease.Linear)
+    {
+        float newVolume = Mathf.Clamp01(value);
+
+        if (time <= 0)
+        {
+            audioSource.volume = newVolume;
+            return;
+        }
+        audioSource.DOFade(newVolume, time).SetEase(easing).SetUpdate(true);
+    }
+
+    public void SetVolume(int value)
     {
         currentVolume = value;
-        float newVolume = Utils.ParseVolume(value, curve);
+        float newVolume = Utils.ParseVolume(value);
         audioMixer.SetFloat("Volume", newVolume);
     }
 
@@ -58,7 +74,7 @@ public class MusicPlayer : MonoBehaviour
         AudioClip newClip = GetSceneMusic();
         bool onDifferentAudioClip = audioSource.clip != newClip;
 
-        DefaultVolume();
+        DefaultSourceVolume();
         audioSource.clip = newClip;
 
         if (restartOnDifferentAudioClip && onDifferentAudioClip)

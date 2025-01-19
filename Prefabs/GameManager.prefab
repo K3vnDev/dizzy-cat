@@ -142,34 +142,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource: {fileID: 0}
-  audioMixer: {fileID: 24100000, guid: 69a45a7d7adcdd24b87ae071f523a5db, type: 2}
-  curve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
   currentVolume: 70
-  menuSong: {fileID: 8300000, guid: b6891bf38a3df44b29d9271a7acfea03, type: 3}
-  gameplaySong: {fileID: 8300000, guid: bc7141979e6e01d4f9915740f80d53fe, type: 3}
+  audioMixer: {fileID: 24100000, guid: 69a45a7d7adcdd24b87ae071f523a5db, type: 2}
+  menuSong: {fileID: 8300000, guid: b29fdb3b9366c4f419886e555df069c8, type: 3}
+  gameplaySong: {fileID: 8300000, guid: a4f280fadb82eac448ce546f515490d2, type: 3}
+  lowVolume: 0.15
+  volumeFadeTime: 0.5
 --- !u!1 &2653379406792679852
 GameObject:
   m_ObjectHideFlags: 0
@@ -218,7 +196,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   originalMaterial: {fileID: 2100000, guid: ef30ae8dd4472714e8ecfbbe5f7c5fb9, type: 2}
   fadeInTime: 0.2
-  fadeOutTime: 0.5
   deafultMoveRepeatRate: 0.2
   sliderMoveRepeatRate: 0.01
 --- !u!114 &5719361216656696191
@@ -310,8 +287,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5d5ea7ade9a771a41bdf32a5a2d35482, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioMixerGroup: {fileID: 24300002, guid: 4065331060d5d754598feb230d1e84fb, type: 2}
   currentVolume: 85
+  audioMixerGroup: {fileID: 24300002, guid: 4065331060d5d754598feb230d1e84fb, type: 2}
   sounds:
   - {fileID: 8300000, guid: 99001d6f0f253fd40b0c768f86436b29, type: 3}
   - {fileID: 8300000, guid: e759c65f76c80834abc572593f946008, type: 3}
@@ -322,30 +299,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: bb110de40b0d0c941af41e1fa85b16d6, type: 3}
   - {fileID: 8300000, guid: 011884aa5945e064492fd877f770bc89, type: 3}
   - {fileID: 8300000, guid: acbb735cfb37b334eb425c27564293fe, type: 3}
-  curve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 2
-      outSlope: 2
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 1
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!1 &6391695086447841657
 GameObject:
   m_ObjectHideFlags: 0
@@ -450,7 +403,49 @@ MonoBehaviour:
   - {fileID: 1150595536, guid: 596343eef0206764888eedf0615c7355, type: 3}
   - {fileID: 354770336, guid: 596343eef0206764888eedf0615c7355, type: 3}
   - {fileID: -1595798593, guid: 596343eef0206764888eedf0615c7355, type: 3}
-  onFullscreen: 1
+  IsOnFullscreen: 1
+  soundCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 6.370197
+      outSlope: 6.370197
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.082722686
+    - serializedVersion: 3
+      time: 0.18897943
+      value: 0.60213894
+      inSlope: 1.2516707
+      outSlope: 1.2516707
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.4416219
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.5019332
+      value: 0.8647766
+      inSlope: 0.41456783
+      outSlope: 0.41456783
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.397572
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.15420626
+      outSlope: 0.15420626
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.49310884
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   openingAlreadyShown: 0
 --- !u!1 &9107976882186622934
 GameObject:

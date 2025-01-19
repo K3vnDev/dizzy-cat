@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,79 +10,72 @@ public class BackgroundController : MonoBehaviour
     [SerializeField] Color[] loopColors;
 
     [Header ("Time")]
-    [SerializeField] float loopColorsTransitionTime = 2.5f;
-    [SerializeField] float waitTime = 4f;
-    [SerializeField] float grayColorTransitionTime = 0.15f;
+    [SerializeField] float defaultColorsTime = 1.5f;
+    [SerializeField] float grayColorTime = 0.1f;
+    [SerializeField] float waitTime = 3f;
 
-    [Header ("Curve")]
-    [SerializeField] AnimationCurve colorTransitionCurve;
-
-    int currentColorIndex = -1;
+    int colorIndex = -1;
     Image image;
+    readonly string COLOR_PROPERTY = "_PrimaryCol";
 
 
-    void Start()
+    void Awake()
     {
         image = GetComponent<Image>();
         StartCoroutine(LoopColors());
 
-        int newColorIndex = GetRandomColorIndex();
-        currentColorIndex = newColorIndex;
-
-        SetRendererColor(loopColors[currentColorIndex]);
+        RandomizeColorIndex();
+        image.material.SetColor(COLOR_PROPERTY, loopColors[colorIndex]);
     }
 
-    Color GetRendererColor() => image.material.GetColor("_PrimaryCol");
-    void SetRendererColor(Color color) => image.material.SetColor("_PrimaryCol", color);
-
-    int GetRandomColorIndex()
+    void RandomizeColorIndex()
     {
         int randomIndex;
 
         do randomIndex = Random.Range(0, loopColors.Length);
-        while (randomIndex == currentColorIndex);
+        while (Mathf.Abs(randomIndex - colorIndex) <= 1);
 
-        return randomIndex;
+        colorIndex = randomIndex;
+    }
+
+    void TransitionateColor(Color color, float time)
+    {
+        image.material.DOColor(color, COLOR_PROPERTY, time).SetEase(Ease.OutCubic);
+    }
+
+    void StopTransition()
+    {
+        StopAllCoroutines();
+        image.material.DOKill();
     }
 
     public void SetIsOnGrayBackground(bool isOnGrayBackground)
     {
-        StopAllCoroutines();
+        StopTransition();
 
-        Color color = isOnGrayBackground ? grayColor : loopColors[currentColorIndex];
-        StartCoroutine(LerpColor(color, grayColorTransitionTime));
+        Color newColor = isOnGrayBackground 
+            ? grayColor 
+            : loopColors[colorIndex];
 
-        if (!isOnGrayBackground) StartCoroutine(LoopColors());
+        TransitionateColor(newColor, grayColorTime);
+
+        if (!isOnGrayBackground)
+        {
+            StartCoroutine(LoopColors());
+        }
     }
 
     private IEnumerator LoopColors()
     {
         while (true)
         {
-            // Wait some time
             yield return new WaitForSeconds(waitTime);
 
-            currentColorIndex = GetRandomColorIndex();
-            Color targetColor = loopColors[currentColorIndex];
+            Color targetColor = loopColors[colorIndex];
+            TransitionateColor(targetColor, defaultColorsTime);
 
-            // Transitionate color
-            yield return LerpColor(targetColor, loopColorsTransitionTime);
+            yield return new WaitForSeconds(defaultColorsTime);
+            RandomizeColorIndex();
         }
-    }
-
-    private IEnumerator LerpColor(Color target, float time)
-    {
-        Color start = GetRendererColor();
-        float elapsed = 0;
-
-        while (elapsed < time)
-        {
-            Color color = Color.Lerp(start, target, colorTransitionCurve.Evaluate(elapsed / time));
-            SetRendererColor(color);
-
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
-        SetRendererColor(target);
     }
 }

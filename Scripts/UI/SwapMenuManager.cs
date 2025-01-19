@@ -13,6 +13,9 @@ public class SwapMenuManager : MonoBehaviour
     public static SwapMenuManager I;
     BackgroundController backgroundController;
 
+    readonly float layoutBreakAspectRatio = 1.9f;
+    public bool isOnBrokenLayout = false;
+
     [SerializeField] GameObject skinsButton, settingsButton;
 
     private void Awake()
@@ -28,6 +31,9 @@ public class SwapMenuManager : MonoBehaviour
            .GetComponent<BackgroundController>();
 
         InputManager.I.UseActionMap(IMActionMap.UI);
+
+        float aspectRatio = (float)Screen.width / Screen.height;
+        isOnBrokenLayout = aspectRatio > layoutBreakAspectRatio;
     }
 
     public void SwapMenu(Menu menu)

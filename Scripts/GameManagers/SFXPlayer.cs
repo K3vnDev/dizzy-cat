@@ -5,12 +5,11 @@ public class SFXPlayer : MonoBehaviour
 {
     public static SFXPlayer I;
 
+    [Range (0, 100)] public int currentVolume = 85;
     [SerializeField] AudioMixerGroup audioMixerGroup;
-    public float currentVolume = 85;
 
     [SerializeField] AudioClip[] sounds;
     public enum Sound { Enter, Exit, Select, Play, Rotate, Meow, Eating, Key, Lock }
-    [SerializeField] AnimationCurve curve;
 
     private void Awake()
     {
@@ -27,10 +26,10 @@ public class SFXPlayer : MonoBehaviour
         SetVolume(currentVolume);
     }
 
-    public void SetVolume(float value)
+    public void SetVolume(int value)
     {
         currentVolume = value;
-        float newVolume = Utils.ParseVolume(value, curve);
+        float newVolume = Utils.ParseVolume(value);
         audioMixerGroup.audioMixer.SetFloat("Volume", newVolume);
     }
 

@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class FishController : MonoBehaviour, ICollectable
 {
-    [SerializeField] bool isFinal;
-    [SerializeField] float sceneLoadDelay = 0.9f;
+    [SerializeField] bool final;
+    readonly float SCENE_LOAD_DELAY = 0.9f;
 
     SpriteRenderer spriteRenderer;
     EndManager endManager;
@@ -37,7 +37,7 @@ public class FishController : MonoBehaviour, ICollectable
 
         StopParticles();
 
-        if (isFinal )
+        if (final )
         {
             endManager.Trigger();
             return;
@@ -57,7 +57,7 @@ public class FishController : MonoBehaviour, ICollectable
 
     IEnumerator LoadNextScene()
     {
-        yield return new WaitForSeconds(sceneLoadDelay);
+        yield return new WaitForSeconds(SCENE_LOAD_DELAY);
         TransitionManager.I.LoadScene(TMScene.NextLevel);
     }
 }

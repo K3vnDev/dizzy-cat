@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 public class CharacterSelectionController : MonoBehaviour
 {
@@ -12,7 +8,9 @@ public class CharacterSelectionController : MonoBehaviour
     readonly GameObject[] characterButtons = new GameObject[8];
     GameObject charactersGrid;
 
-    private void Awake()
+
+
+    void Awake()
     {
         charactersGrid = GameObject.FindWithTag("CharactersGrid");
         InitCharacterButtons();
@@ -20,7 +18,7 @@ public class CharacterSelectionController : MonoBehaviour
         NavigationSystem.I.Initialize(gameObject, GetTarget());
     }
 
-    private void OnEnable()
+    void OnEnable()
     {
         NavigationSystem.I.Refresh(gameObject, GetTarget());
     }
@@ -51,14 +49,14 @@ public class CharacterSelectionController : MonoBehaviour
         SwapMenuManager.I.SwapMenu(SwapMenuManager.Menu.Main);
     }
 
-    private void UpdateSelectorPosition()
+    void UpdateSelectorPosition()
     {
         int index = GameManager.I.selectedCharacter;
         _selector.transform.SetParent(characterButtons[index].transform, false);
         _selector.transform.SetAsFirstSibling();
     }
 
-    private void InitCharacterButtons()
+    void InitCharacterButtons()
     {
         // Destroy old character buttons if theres any
         foreach (Transform oldCharacterButton in charactersGrid.transform)
